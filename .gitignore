@@ -27,4 +27,11 @@
 *.out
 *.app
 
+# Other build files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Qt User Data
 *.user
