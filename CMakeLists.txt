@@ -13,6 +13,14 @@ pkg_search_module(SDL2 REQUIRED sdl2)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	add_definitions(-DLOG_FINE)
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+	add_definitions(-DLOG_SEVERE)
+else(CMAKE_BUILD_TYPE STREQUAL "Debug")
+	add_definitions(-DLOG_INFO)
+endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
+
 include_directories(${OpenGL_INCLUDE_DIRS})
 include_directories(${GLEW_INCLUDE_DIRS})
 include_directories(${GLM_INCLUDE_DIRS})
