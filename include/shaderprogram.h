@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <texture.h>
 #include <unordered_map>
 #include <vector>
 
@@ -18,10 +19,12 @@ public:
     ~ShaderProgram();
 	void attachShader(std::shared_ptr<const Shader> shader);
 	void detachShader(std::shared_ptr<const Shader> shader);
-	void bindFragDataLocation(GLuint colorNumber, std::string name);
+	void vertexAttribPointer(const std::string &name, GLint size, GLenum type, GLsizei stride, GLsizei offset);
+	void bindFragDataLocation(GLuint colorNumber, const std::string &name);
 	void link();
+
 	void use() const;
-	GLint getUniformLocation(const std::string name) const;
+	GLint getUniformLocation(const std::string &name) const;
 private:
 	ShaderProgram(const ShaderProgram &) = delete;
 	ShaderProgram &operator=(const ShaderProgram &) = delete;
@@ -37,7 +40,7 @@ inline void ShaderProgram::use() const
 	glUseProgram(mId);
 }
 
-GLint ShaderProgram::getUniformLocation(const std::string name) const
+inline GLint ShaderProgram::getUniformLocation(const std::string &name) const
 {
 	auto it = mUniforms.find(name);
 	if (it == mUniforms.end()) {
