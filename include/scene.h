@@ -16,6 +16,7 @@ public:
     Scene();
     ~Scene();
 
+	void draw() const;
     void update(float elapsedTime);
 
     void add(shared_ptr<Drawable> obj);
