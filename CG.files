@@ -23,3 +23,8 @@ src/meshinstance.cpp
 include/material.h
 src/material.cpp
 src/main.cpp
+include/filesystem.h
+src/filesystem.cpp
+include/testbox.h
+src/testbox.cpp
+include/logging.h
