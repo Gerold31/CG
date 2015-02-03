@@ -7,8 +7,8 @@
 
 #include <GL/glew.h>
 
-using std::cerr;
-using std::endl;
+#include "logging.h"
+
 using std::exit;
 using std::regex;
 using std::regex_match;
@@ -69,13 +69,12 @@ void ShaderProgram::link()
 	glGetProgramiv(mId, GL_LINK_STATUS, &linkStatus);
 	glGetProgramInfoLog(mId, 2048, nullptr, buffer);
 	if (!regex_match(buffer, regex_empty)) {
-		cerr << "Linking shader program produced some output:" << endl;
-		cerr << buffer << endl;
+		WARNING("Linking shader program produced some output:\n%s", buffer);
 	}
 	if (linkStatus != GL_TRUE) {
-		// TODO throw exception
-		cerr << "Could not link shader program." << endl;
+		SEVERE("Could not link shader program.");
 		exit(EXIT_FAILURE);
+		// TODO throw exception
 	}
 
 	glValidateProgram(mId);
@@ -84,12 +83,11 @@ void ShaderProgram::link()
 	glGetProgramiv(mId, GL_VALIDATE_STATUS, &validateStatus);
 	glGetProgramInfoLog(mId, 2048, nullptr, buffer);
 	if (!regex_match(buffer, regex_empty)) {
-		cerr << "Linking shader program produced some output:" << endl;
-		cerr << buffer << endl;
+		WARNING("Linking shader program produced some output:\n%s", buffer);
 	}
 	if (validateStatus != GL_TRUE) {
-		// TODO throw exception
-		cerr << "Shader program is invalid." << endl;
+		SEVERE("Shader program is invalid.");
 		exit(EXIT_FAILURE);
+		// TODO throw exception
 	}
 }

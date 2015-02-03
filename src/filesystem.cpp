@@ -96,23 +96,48 @@ std::shared_ptr<Shader> FileSystem::loadShader(const std::string &path) const
 std::shared_ptr<ShaderProgram> FileSystem::loadShaderProgram(const std::string &path) const
 {
 	INFO("Load shader program: %s", path.c_str());
-	static const std::regex r{"\\s*(\\S*)\\s*=\\s*(\\S*)\\s*"};
-	auto stream = getInputStream(path);
 
+	static const std::regex regex_comment{"#.*|"};
+	static const std::regex regex_option{"\\s*(\\S*)\\s*=\\s*(\\S*)\\s*"};
+	static const std::regex regex_section{"\\s*\\[\\s*(\\S*)\\s*\\]\\s*"};
+
+	auto stream = getInputStream(path);
 	std::shared_ptr<ShaderProgram> prog = std::make_shared<ShaderProgram>();
 
 	std::string line;
+	std::string section{""};
+	int sectionId = 0;
 	while (stream->good()) {
 		std::getline(*stream, line);
 		std::smatch match;
-		if (std::regex_match(line, match, r)) {
-			auto shader = getShader(match[2]);
-			prog->attachShader(shader);
-		} else {
+		if (std::regex_match(line, match, regex_section)) {
+			section = match[1];
+			if(section == "shader") {
+				sectionId = 1;
+			} else if (section == "texture") {
+				sectionId = 2;
+			} else if (section == "framebuffer") {
+				sectionId = 3;
+			} else {
+				WARNING("Unknown section in shader program: %s ('%s')", path.c_str(), section.c_str());
+				sectionId = 0;
+			}
+		} else if (std::regex_match(line, match, regex_option)) {
+			if (sectionId == 1) {
+				auto shader = getShader(match[2]);
+				prog->attachShader(shader);
+			} else if (sectionId == 2) {
+				// TODO
+			} else if (sectionId == 3) {
+				// TODO
+			}
+		} else if (!std::regex_match(line, regex_comment)) {
 			WARNING("Invalid line in shader program: %s ('%s')", path.c_str(), line.c_str());
 			// TODO thow exception?
 		}
 	}
+
+	// TODO check if stream has finished or error occurred.
 
 	// TODO bind fragment data location
 
@@ -129,11 +154,11 @@ std::shared_ptr<Texture> FileSystem::loadTexture(const std::string &path) const
 	{
 		// Check that the image's width is a power of 2
 		if ( (surface->w & (surface->w - 1)) != 0 ) {
-			std::cerr << "warning: image's' width is not a power of 2: " << path << std::endl;
+			WARNING("Image's' width is not a power of 2: %s", path.c_str());
 		}
 		// Also check if the height is a power of 2
 		if ( (surface->h & (surface->h - 1)) != 0 ) {
-			std::cerr << "warning: image's height is not a power of 2: " << path << std::endl;
+			WARNING("Image's height is not a power of 2: %s", path.c_str());
 		}
 		// get the number of channels in the SDL surface
 		int channels = surface->format->BytesPerPixel;
@@ -150,7 +175,7 @@ std::shared_ptr<Texture> FileSystem::loadTexture(const std::string &path) const
 			else
 				type = GL_BGR;
 		} else {
-			WARNING("the image is not truecolor: %s", path.c_str());
+			WARNING("Image is not truecolor: %s", path.c_str());
 			// TODO error handling
 		}
 		// create texture

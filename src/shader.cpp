@@ -6,8 +6,8 @@
 
 #include <GL/glew.h>
 
-using std::cerr;
-using std::endl;
+#include "logging.h"
+
 using std::exit;
 using std::regex;
 using std::regex_match;
@@ -47,12 +47,11 @@ void Shader::compile()
 	glGetShaderiv(mId, GL_COMPILE_STATUS, &status);
 	glGetShaderInfoLog(mId, 2048, nullptr, buffer);
 	if (!regex_match(buffer, regex_empty)) {
-		cerr << "Compiling shader produced some output:" << endl;
-		cerr << buffer << endl;
+		WARNING("Compiling shader produced some output:\n%s", buffer);
 	}
 	if (status != GL_TRUE) {
-		// TODO throw exception
-		cerr << "Could not compile shader." << endl;
+		SEVERE("Could not compile shader.");
 		exit(EXIT_FAILURE);
+		// TODO throw exception
 	}
 }
