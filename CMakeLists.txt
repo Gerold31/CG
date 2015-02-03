@@ -13,6 +13,7 @@ pkg_search_module(SDL2 REQUIRED sdl2)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+add_definitions(-DLOG_COLOR)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 	add_definitions(-DLOG_FINE)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
