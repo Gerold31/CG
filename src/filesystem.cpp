@@ -1,5 +1,7 @@
 #include "filesystem.h"
 
+#include <cstdlib>
+#include <cerrno>
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -17,6 +19,7 @@
 #include "shader.h"
 #include "shaderprogram.h"
 #include "texture.h"
+#include "types.h"
 
 #define GET(type, var, path, cache, load) std::shared_ptr<const type> var; \
 { \
@@ -104,10 +107,19 @@ std::shared_ptr<ShaderProgram> FileSystem::loadShaderProgram(const std::string &
 	auto stream = getInputStream(path);
 	std::shared_ptr<ShaderProgram> prog = std::make_shared<ShaderProgram>();
 
+	struct fb_tex_entry {
+		std::string name;
+		GLint location;
+	};
+	std::vector<fb_tex_entry> framebufferBindings;
+	std::vector<fb_tex_entry> textureBindings;
+
+	unsigned int lineNr = 0;
 	std::string line;
 	std::string section{""};
 	int sectionId = 0;
 	while (stream->good()) {
+		++lineNr;
 		std::getline(*stream, line);
 		std::smatch match;
 		if (std::regex_match(line, match, regex_section)) {
@@ -123,25 +135,58 @@ std::shared_ptr<ShaderProgram> FileSystem::loadShaderProgram(const std::string &
 				sectionId = 0;
 			}
 		} else if (std::regex_match(line, match, regex_option)) {
+			std::string key = match[1];
+			std::string value = match[2];
 			if (sectionId == 1) {
-				auto shader = getShader(match[2]);
+				// [ shader ]
+				auto shader = getShader(value);
 				prog->attachShader(shader);
 			} else if (sectionId == 2) {
-				// TODO
+				// [ texture ]
+				errno = 0;
+				fb_tex_entry entry;
+				entry.location = (GLint) strtol(value.c_str(), nullptr, 0);
+				if (errno != 0) {
+					WARNING("Inavlid value on line %d in '%s': %s", lineNr, path.c_str(), strerror(errno));
+					continue;
+				} else if (entry.location < 1) {
+					WARNING("Invalid texture slot on line %d in %s", lineNr, path.c_str());
+					continue;
+				}
+				entry.name = key;
+				textureBindings.push_back(entry);
 			} else if (sectionId == 3) {
-				// TODO
+				// [ framebuffer ]
+				errno = 0;
+				fb_tex_entry entry;
+				entry.location = (GLint) strtol(value.c_str(), nullptr, 0);
+				if (errno != 0) {
+					WARNING("Inavlid value on line %d in '%s': %s", lineNr, path.c_str(), strerror(errno));
+					continue;
+				} else if (entry.location < 0) {
+					WARNING("Invalid fragment data location on line %d in '%s'", lineNr, path.c_str());
+					continue;
+				}
+				entry.name = key;
+				framebufferBindings.push_back(entry);
 			}
 		} else if (!std::regex_match(line, regex_comment)) {
 			WARNING("Invalid line in shader program: %s ('%s')", path.c_str(), line.c_str());
-			// TODO thow exception?
 		}
 	}
 
 	// TODO check if stream has finished or error occurred.
 
-	// TODO bind fragment data location
-
+	for (const fb_tex_entry &entry : framebufferBindings) {
+		FINE("Set frag data location: %s to %d", entry.name.c_str(), entry.location);
+		prog->bindFragDataLocation(entry.location, entry.name);
+	}
 	prog->link();
+	for (const fb_tex_entry &entry : textureBindings) {
+		FINE("Set uniform '%s' to %d.", entry.name.c_str(), entry.location);
+		prog->setUniform(entry.name, entry.location);
+	}
+
 	return std::move(prog);
 }
 

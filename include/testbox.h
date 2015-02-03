@@ -19,7 +19,7 @@ public:
 	virtual void draw(const Camera &camera) const;
 private:
 	FileSystem mFS;
-	shared_ptr<ShaderProgram> mShaderProg;
+	shared_ptr<const ShaderProgram> mShaderProg;
 	GLuint vao;
 	GLuint vbo;
 };

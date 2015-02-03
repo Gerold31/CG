@@ -47,13 +47,6 @@ void ShaderProgram::detachShader(std::shared_ptr<const Shader> shader)
 	}
 }
 
-void ShaderProgram::vertexAttribPointer(const std::string &name, GLint size, GLenum type, GLsizei stride, GLsizei offset)
-{
-	GLint attrib = glGetAttribLocation(mId, name.c_str());
-	glEnableVertexAttribArray(attrib);
-	glVertexAttribPointer(attrib, size, type, GL_FALSE, stride, (void*) offset);
-}
-
 void ShaderProgram::bindFragDataLocation(GLuint colorNumber, const std::string &name)
 {
 	glBindFragDataLocation(mId, colorNumber, name.c_str());

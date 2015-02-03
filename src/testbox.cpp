@@ -9,11 +9,8 @@
 
 TestBox::TestBox() :
 	mFS{"./"},
-	mShaderProg{mFS.loadShaderProgram("shader/testbox.sp")}
+	mShaderProg{mFS.getShaderProgram("shader/testbox.sp")}
 {
-	mShaderProg->bindFragDataLocation(0, "pcolor");
-	mShaderProg->link();
-
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -37,9 +34,9 @@ TestBox::TestBox() :
 	};
 	glBufferData(GL_ARRAY_BUFFER, 12 * 9 * sizeof(GLfloat), data, GL_STATIC_DRAW);
 
-	mShaderProg->vertexAttribPointer("pos", 3, GL_FLOAT, 9*sizeof(GLfloat), 0);
-	mShaderProg->vertexAttribPointer("color", 3, GL_FLOAT, 9*sizeof(GLfloat), 3*sizeof(GLfloat));
-	mShaderProg->vertexAttribPointer("normal", 3, GL_FLOAT, 9*sizeof(GLfloat), 6*sizeof(GLfloat));
+	mShaderProg->setVertexAttribPointer("pos", 3, GL_FLOAT, 9*sizeof(GLfloat), 0);
+	mShaderProg->setVertexAttribPointer("color", 3, GL_FLOAT, 9*sizeof(GLfloat), 3*sizeof(GLfloat));
+	mShaderProg->setVertexAttribPointer("normal", 3, GL_FLOAT, 9*sizeof(GLfloat), 6*sizeof(GLfloat));
 }
 
 TestBox::~TestBox()
@@ -58,7 +55,7 @@ void TestBox::draw(const Camera &camera) const
 	mShaderProg->use();
 	glBindVertexArray(vao);
 
-	glUniformMatrix4fv(mShaderProg->getUniformLocation("proj"), 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
+	mShaderProg->setUniform("proj", camera.getProjection());
 
 	glDrawArrays(GL_TRIANGLES, 0, 12);
 }
