@@ -1,6 +1,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <cassert>
+
 #include <GL/glew.h>
 
 
@@ -17,7 +19,7 @@ public:
 	void setTexParameter(GLenum parameter, const GLint *value);
 	void setTexImage2D(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid *data);
 
-	void bindToSlot(GLenum slot) const;
+	void bindToSlot(int index) const;
 private:
 	GLuint mId;
 	GLenum mTextureType;
@@ -53,10 +55,12 @@ inline void Texture::setTexParameter(GLenum parameter, const GLint *value)
 	glTexParameteriv(mTextureType, parameter, value);
 }
 
-inline void Texture::bindToSlot(GLenum slot) const
+inline void Texture::bindToSlot(int index) const
 {
-	glActiveTexture(slot);
+	assert(index > 0);
+	glActiveTexture(GL_TEXTURE0 + index);
 	glBindTexture(mTextureType, mId);
+	glActiveTexture(GL_TEXTURE0);
 }
 
 #endif // TEXTURE_H

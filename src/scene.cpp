@@ -1,5 +1,6 @@
 #include "scene.h"
 
+#include <cassert>
 #include <memory>
 
 #include "camera.h"
