@@ -56,6 +56,7 @@ void TestBox::draw(const Camera &camera) const
 	glBindVertexArray(vao);
 
 	mShaderProg->setUniform("proj", camera.getProjection());
+	mShaderProg->setUniform("model", getTransfToGlobale());
 
 	glDrawArrays(GL_TRIANGLES, 0, 12);
 }
