@@ -20,7 +20,7 @@ public:
 
 	void setPosition(const Vec3 &pos);
 	void move(const Vec3 &movement);
-	void rotate(float angle, Vec3 &v);
+	void rotate(float angle, const Vec3 &v);
 	void lookAt(const Vec3 &center, const Vec3 &up);
 
 	const Mat4 &getTransfToLocale() const;
@@ -50,14 +50,14 @@ inline void Object::setPosition(const Vec3 &pos)
 
 inline void Object::move(const Vec3 &movement)
 {
-	glm::translate(mLocaleToGlobale, movement);
-	glm::translate(mGlobaleToLocale, -movement);
+	mLocaleToGlobale = glm::translate(mLocaleToGlobale, movement);
+	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -movement);
 }
 
-inline void Object::rotate(float angle, Vec3 &v)
+inline void Object::rotate(float angle, const Vec3 &v)
 {
-	glm::rotate(mLocaleToGlobale, angle, v);
-	glm::rotate(mGlobaleToLocale, -angle, v);
+	mLocaleToGlobale = glm::rotate(mLocaleToGlobale, angle, v);
+	mGlobaleToLocale = glm::rotate(mGlobaleToLocale, -angle, v);
 }
 
 inline void Object::lookAt(const Vec3 &center, const Vec3 &up)
