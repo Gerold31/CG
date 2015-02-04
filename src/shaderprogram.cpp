@@ -58,7 +58,7 @@ void ShaderProgram::link()
 
 	GLint linkStatus;
 	GLchar buffer[2048];
-	static const regex regex_empty{"\\s*"};
+	static const regex regex_empty("\\s*");
 	glGetProgramiv(mId, GL_LINK_STATUS, &linkStatus);
 	glGetProgramInfoLog(mId, 2048, nullptr, buffer);
 	if (!regex_match(buffer, regex_empty)) {

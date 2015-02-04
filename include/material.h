@@ -1,9 +1,10 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include <types.h>
+#include "types.h"
 
 class Texture;
+
 
 class Material
 {

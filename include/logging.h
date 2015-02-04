@@ -15,36 +15,35 @@
 #define LOG_COLOR_SEVE ""
 #endif
 
-template <typename... Args>
-static void PRINT(const char *format, Args... args)
-{
-	char buf_[2048];
-	snprintf(buf_, 2048, format, args...);
-	std::cerr << buf_ << LOG_COLOR_RESET << std::endl;
+#define PRINT(format, ...) \
+{ \
+	char buf_[2048]; \
+	snprintf(buf_, 2048, format LOG_COLOR_RESET, ##__VA_ARGS__); \
+	std::cerr << buf_ << std::endl; \
 }
 
 #if defined(LOG_FINE)
-#define FINE(msg...) PRINT("FINE: " msg)
+#define FINE(...) PRINT("FINE: " __VA_ARGS__)
 #else
-#define FINE(msg...) ((void)0)
+#define FINE(...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO)
-#define INFO(msg...) PRINT("INFO: " msg)
+#define INFO(...) PRINT("INFO: " __VA_ARGS__)
 #else
-#define INFO(msg...) ((void)0)
+#define INFO(...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO) || defined(LOG_WARNING)
-#define WARNING(msg...) PRINT(LOG_COLOR_WARN "WARN: " msg)
+#define WARNING(...) PRINT(LOG_COLOR_WARN "WARN: " __VA_ARGS__)
 #else
-#define WARNING(msg...) ((void)0)
+#define WARNING(...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO) || defined(LOG_WARNING) || defined(LOG_SEVERE)
-#define SEVERE(msg...) PRINT(LOG_COLOR_SEVE "SEVE: " msg)
+#define SEVERE(...) PRINT(LOG_COLOR_SEVE "SEVE: " __VA_ARGS__)
 #else
-#define SEVERE(msg...) ((void)0)
+#define SEVERE(...) ((void)0)
 #endif
 
 #endif // LOGGING

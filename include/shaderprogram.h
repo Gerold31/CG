@@ -3,7 +3,6 @@
 
 #include <memory>
 #include <string>
-#include <texture.h>
 #include <unordered_map>
 #include <vector>
 

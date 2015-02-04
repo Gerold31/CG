@@ -43,7 +43,7 @@ void Shader::compile()
 
 	GLint status;
 	GLchar buffer[2048];
-	static const regex regex_empty{"\\s*"};
+	static const regex regex_empty("\\s*");
 	glGetShaderiv(mId, GL_COMPILE_STATUS, &status);
 	glGetShaderInfoLog(mId, 2048, nullptr, buffer);
 	if (!regex_match(buffer, regex_empty)) {

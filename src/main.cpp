@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -45,8 +46,8 @@ int main(int argc, char *argv[])
 	scene.setCamera(cam);
 	//scene.add(box);
 
-	cam->setPosition(Vec3{0.f, 1.f, 2.f});
-	cam->lookAt(Vec3{0.f, 0.f, 0.f}, Vec3{0.f, 1.f, 0.f});
+	cam->setPosition(Vec3(0.f, 1.f, 2.f);
+	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
 	// TODO load scene
 
 	// run main loop
