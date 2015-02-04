@@ -40,13 +40,13 @@ int main(int argc, char *argv[])
 
 	INFO("Create scene");
 	Scene scene;
-	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_2, 0.1f, 1000.f, 1.f);
-	//std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
+	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, 800.f/600.f);
+	std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
 
 	scene.setCamera(cam);
-	//scene.add(box);
+	scene.add(box);
 
-	cam->setPosition(Vec3(0.f, 1.f, 2.f));
+	cam->setPosition(Vec3(1.f, 3.f, 5.f));
 	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
 	// TODO load scene
 
