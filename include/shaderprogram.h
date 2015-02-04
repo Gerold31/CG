@@ -36,8 +36,8 @@ public:
 	void setUniform(const std::string &name, const Mat4 &value) const;
 
 private:
-	ShaderProgram(const ShaderProgram &) = delete;
-	ShaderProgram &operator=(const ShaderProgram &) = delete;
+	ShaderProgram(const ShaderProgram &); // = delete;
+	ShaderProgram &operator=(const ShaderProgram &); // = delete;
 
 	GLuint mId;
 	std::vector<std::shared_ptr<const Shader>> mShaders;

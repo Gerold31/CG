@@ -16,8 +16,8 @@ public:
 	void setSource(GLsizei count, const GLchar **sources, GLint *length);
 	void compile();
 private:
-	Shader(const Shader &) = delete;
-	Shader &operator=(const Shader &) = delete;
+	Shader(const Shader &); // = delete;
+	Shader &operator=(const Shader &); // = delete;
 
 	GLuint mId;
 	GLenum mShaderType;
