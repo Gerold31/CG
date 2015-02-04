@@ -14,8 +14,8 @@ using std::regex_match;
 
 
 Shader::Shader(GLenum shaderType, const char source[]) :
-	mId{glCreateShader(shaderType)},
-	mShaderType{shaderType}
+	mId(glCreateShader(shaderType)),
+	mShaderType(shaderType)
 {
 	if (source != nullptr) {
 		setSource(source);

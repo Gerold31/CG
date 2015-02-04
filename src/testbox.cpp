@@ -8,8 +8,8 @@
 
 
 TestBox::TestBox() :
-	mFS{"./"},
-	mShaderProg{mFS.getShaderProgram("shader/testbox.sp")}
+	mFS("./"),
+	mShaderProg(mFS.getShaderProgram("shader/testbox.sp"))
 {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);

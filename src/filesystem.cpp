@@ -34,7 +34,7 @@
 
 
 FileSystem::FileSystem(std::string root) :
-	mRoot{root[root.length()-1] == '/' ? root : root.substr(0, root.length()-1)}
+	mRoot(root[root.length()-1] == '/' ? root : root.substr(0, root.length()-1))
 {
 
 }
@@ -251,7 +251,7 @@ std::string FileSystem::getFullPath(const std::string &path) const
 
 std::unique_ptr<std::istream> FileSystem::getInputStream(const std::string &path) const
 {
-	std::unique_ptr<std::ifstream> stream{new std::ifstream{getFullPath(path)}};
+	std::unique_ptr<std::ifstream> stream(new std::ifstream(getFullPath(path)));
 	// TODO throw on error
 	return std::move(stream);
 }

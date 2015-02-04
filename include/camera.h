@@ -29,7 +29,7 @@ private:
 	float mFar;
 	float mAspect;
 
-	mutable bool mNeedUpdate = true;
+	mutable bool mNeedUpdate;
 	mutable Mat4 mPerspective;
 };
 

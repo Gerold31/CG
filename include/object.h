@@ -32,7 +32,7 @@ protected:
 	const Scene *getScene() const;
 
 private:
-	Scene *mScene = nullptr;
+	Scene *mScene;
 	Mat4 mGlobaleToLocale;
 	Mat4 mLocaleToGlobale;
 };

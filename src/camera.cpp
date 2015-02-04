@@ -2,10 +2,11 @@
 
 
 Camera::Camera(float fov, float near, float far, float aspect) :
-	mFov{fov},
-	mNear{near},
-	mFar{far},
-	mAspect{aspect}
+	mFov(fov),
+	mNear(near),
+	mFar(far),
+	mAspect(aspect),
+	mNeedUpdate(false)
 {
 }
 

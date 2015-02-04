@@ -2,7 +2,7 @@
 
 
 Texture::Texture(GLenum textureType) :
-	mTextureType{textureType}
+	mTextureType(textureType)
 {
 	glGenTextures(1, &mId);
 	// TODO glCreateTexture in OpenGL 4.5+ possible

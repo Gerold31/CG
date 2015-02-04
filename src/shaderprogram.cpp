@@ -17,7 +17,7 @@ using std::string;
 
 
 ShaderProgram::ShaderProgram() :
-	mId{glCreateProgram()}
+	mId(glCreateProgram())
 {
 }
 
