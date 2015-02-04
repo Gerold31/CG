@@ -6,7 +6,7 @@ Camera::Camera(float fov, float near, float far, float aspect) :
 	mNear(near),
 	mFar(far),
 	mAspect(aspect),
-	mNeedUpdate(false)
+	mNeedUpdate(true)
 {
 }
 
