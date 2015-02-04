@@ -26,25 +26,25 @@ static void PRINT(const char *format, Args... args)
 #if defined(LOG_FINE)
 #define FINE(msg...) PRINT("FINE: " msg)
 #else
-#define FINE(msg...)
+#define FINE(msg...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO)
 #define INFO(msg...) PRINT("INFO: " msg)
 #else
-#define INFO(msg...)
+#define INFO(msg...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO) || defined(LOG_WARNING)
 #define WARNING(msg...) PRINT(LOG_COLOR_WARN "WARN: " msg)
 #else
-#define WARNING(msg...)
+#define WARNING(msg...) ((void)0)
 #endif
 
 #if defined(LOG_FINE) || defined(LOG_INFO) || defined(LOG_WARNING) || defined(LOG_SEVERE)
 #define SEVERE(msg...) PRINT(LOG_COLOR_SEVE "SEVE: " msg)
 #else
-#define SEVERE(msg...)
+#define SEVERE(msg...) ((void)0)
 #endif
 
 #endif // LOGGING
