@@ -59,7 +59,7 @@ TestBox::TestBox() :
 		-1.f, 1.f, -1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f,
 		1.f, 1.f, -1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f,
 		1.f, 1.f, -1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f,
-		-1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f,
+		1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f,
 		-1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 0.f, 0.f, 0.f
 	};
 	glBufferData(GL_ARRAY_BUFFER, 36 * 9 * sizeof(GLfloat), data, GL_STATIC_DRAW);
