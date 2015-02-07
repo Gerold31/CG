@@ -79,7 +79,7 @@ std::shared_ptr<Shader> FileSystem::loadShader(const std::string &path) const
 	auto stream = getInputStream(path);
 	std::stringstream buffer;
 	buffer << stream->rdbuf();
-	std::string source{buffer.str()};
+	std::string source(buffer.str());
 
 	GLenum type;
 	if (path.substr(path.length() - 3) == ".vs") {
