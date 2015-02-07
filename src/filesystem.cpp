@@ -116,7 +116,7 @@ std::shared_ptr<ShaderProgram> FileSystem::loadShaderProgram(const std::string &
 
 	unsigned int lineNr = 0;
 	std::string line;
-	std::string section{""};
+	std::string section("");
 	int sectionId = 0;
 	while (stream->good()) {
 		++lineNr;
