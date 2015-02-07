@@ -10,6 +10,7 @@
 
 #include "camera.h"
 #include "logging.h"
+#include "onscreentext.h"
 #include "scene.h"
 #include "testbox.h"
 
@@ -48,19 +49,35 @@ int App::run()
 	float aspectRatio = (float) mResolution.x / mResolution.y;
 	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
 	std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
+	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
 
 	scene.setCamera(cam);
 	scene.add(box);
+	scene.add(fpsBox);
 
 	cam->setPosition(Vec3(1.f, 3.f, 5.f));
 	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
+	fpsBox->setPosition(Vec3(-0.9f, -0.9f, 0.f));
 	// TODO load scene
 
 	// run main loop
 	bool running = true;
+	Uint32 fps_counter = 0;
+	Uint32 fps_lastSample = SDL_GetTicks();
+	Uint32 ltime = SDL_GetTicks();
 	while (running)
 	{
 		Uint32 startTime = SDL_GetTicks();
+
+		// update fps
+		if (startTime - fps_lastSample > 1000) {
+			fps_lastSample = startTime;
+			Uint32 fps = fps_counter * 1000 / startTime;
+			static char buf[16];
+			std::sprintf(buf, "FPS: %d", fps);
+			fpsBox->setText(buf);
+		}
+		++fps_counter;
 
 		// poll events
 		SDL_Event e;
