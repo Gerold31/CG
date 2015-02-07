@@ -71,6 +71,7 @@ std::shared_ptr<const Texture> FileSystem::getTexture(const std::string &path) c
 std::shared_ptr<Mesh> FileSystem::loadMesh(const std::string &path) const
 {
 	// TODO
+	return nullptr;
 }
 
 std::shared_ptr<Shader> FileSystem::loadShader(const std::string &path) const
