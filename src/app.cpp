@@ -1,6 +1,7 @@
 #include "app.h"
 
 #include <cmath>
+#include <cstdlib>
 #include <memory>
 #include <mutex>
 
@@ -39,6 +40,7 @@ int App::run()
 	GLenum ret = glewInit();
 	if (ret != GLEW_OK) {
 		SEVERE("Glew initialization failed: %s", glewGetErrorString(ret));
+		return EXIT_FAILURE;
 	}
 
 	INFO("Create file system.");
