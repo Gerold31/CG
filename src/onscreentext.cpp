@@ -7,7 +7,7 @@
 
 
 OnScreenText::OnScreenText(const std::string &text) :
-	mFace("FreeSans.ttf"),
+	mFace(APP->getFileSystem()->getFullPath("fonts/FreeSans.ttf")),
 	mSize(16),
 	mText(text),
 	mProg(APP->getFileSystem()->getShaderProgram("shader/onscreentext.sp"))
