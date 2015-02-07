@@ -66,18 +66,20 @@ int App::run()
 	bool running = true;
 	Uint32 fps_counter = 0;
 	Uint32 fps_lastSample = SDL_GetTicks();
-	Uint32 ltime = SDL_GetTicks();
 	while (running)
 	{
 		Uint32 startTime = SDL_GetTicks();
 
 		// update fps
-		if (startTime - fps_lastSample > 1000) {
-			fps_lastSample = startTime;
-			Uint32 fps = fps_counter * 1000 / startTime;
+		Uint32 fps_diff = startTime - fps_lastSample;
+		if (fps_diff > 1000) {
+			Uint32 fps = fps_counter * 1000 / fps_diff;
 			static char buf[16];
 			std::sprintf(buf, "FPS: %d", fps);
 			fpsBox->setText(buf);
+			// reset counter
+			fps_lastSample = startTime;
+			fps_counter = 0;
 		}
 		++fps_counter;
 
