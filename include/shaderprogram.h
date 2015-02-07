@@ -1,6 +1,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -66,7 +67,7 @@ inline void ShaderProgram::setVertexAttribPointer(const std::string &name, GLint
 {
 	GLint attrib = glGetAttribLocation(mId, name.c_str());
 	glEnableVertexAttribArray(attrib);
-	glVertexAttribPointer(attrib, size, type, GL_FALSE, stride, (GLvoid*) offset);
+	glVertexAttribPointer(attrib, size, type, GL_FALSE, stride, (GLvoid*) (std::intptr_t) offset);
 }
 
 inline void ShaderProgram::setUniform(const std::string &name, GLint value) const

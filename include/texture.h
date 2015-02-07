@@ -21,6 +21,9 @@ public:
 
 	void bindToSlot(int index) const;
 private:
+	Texture(const Texture &); // = delete;
+	Texture &operator=(const Texture &); // = delete;
+
 	GLuint mId;
 	GLenum mTextureType;
 };
