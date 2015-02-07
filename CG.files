@@ -28,3 +28,5 @@ src/filesystem.cpp
 include/testbox.h
 src/testbox.cpp
 include/logging.h
+include/app.h
+src/app.cpp
