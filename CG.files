@@ -28,5 +28,9 @@ src/filesystem.cpp
 include/testbox.h
 src/testbox.cpp
 include/logging.h
+include/fontface.h
+src/fontface.cpp
+include/onscreentext.h
+src/onscreentext.cpp
 include/app.h
 src/app.cpp

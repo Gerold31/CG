@@ -15,6 +15,8 @@ class App
 public:
 	FileSystem *getFileSystem();
 
+	const Vec2i &getResolution() const;
+
 	int run();
 
 private:
@@ -44,6 +46,11 @@ private:
 	}
 };
 
+
+inline const Vec2i &App::getResolution() const
+{
+	return mResolution;
+}
 
 inline FileSystem *App::getFileSystem()
 {
