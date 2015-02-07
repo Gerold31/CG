@@ -100,9 +100,9 @@ std::shared_ptr<ShaderProgram> FileSystem::loadShaderProgram(const std::string &
 {
 	INFO("Load shader program: %s", path.c_str());
 
-	static const std::regex regex_comment{"#.*|"};
-	static const std::regex regex_option{"\\s*(\\S*)\\s*=\\s*(\\S*)\\s*"};
-	static const std::regex regex_section{"\\s*\\[\\s*(\\S*)\\s*\\]\\s*"};
+	static const std::regex regex_comment("#.*|");
+	static const std::regex regex_option("\\s*(\\S*)\\s*=\\s*(\\S*)\\s*");
+	static const std::regex regex_section("\\s*\\[\\s*(\\S*)\\s*\\]\\s*");
 
 	auto stream = getInputStream(path);
 	std::shared_ptr<ShaderProgram> prog = std::make_shared<ShaderProgram>();
