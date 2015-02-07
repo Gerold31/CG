@@ -66,10 +66,9 @@ int App::run()
 	bool running = true;
 	Uint32 fps_counter = 0;
 	Uint32 fps_lastSample = SDL_GetTicks();
+	Uint32 startTime = SDL_GetTicks();
 	while (running)
 	{
-		Uint32 startTime = SDL_GetTicks();
-
 		// update fps
 		Uint32 fps_diff = startTime - fps_lastSample;
 		if (fps_diff > 1000) {
@@ -106,6 +105,8 @@ int App::run()
 		if (remainingTime > 0) {
 			SDL_Delay(remainingTime);
 		}
+
+		startTime = SDL_GetTicks();
 
 		// show on display
 		SDL_GL_SwapWindow(window);
