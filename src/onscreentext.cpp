@@ -22,6 +22,8 @@ OnScreenText::OnScreenText(const std::string &text) :
 
 OnScreenText::~OnScreenText()
 {
+	glDeleteBuffers(1, &vbo);
+	glDeleteVertexArrays(1, &vao);
 }
 
 void OnScreenText::draw(const Camera &camera) const
