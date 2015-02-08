@@ -19,6 +19,11 @@ public:
 	void setFarClip(float far);
 	void setAspect(float aspect);
 
+	float getFov() const { return mFov; }
+	float getNearClip() const { return mNear; }
+	float getFarClip() const { return mFar; }
+	float getAspect() const { return mAspect; }
+
 	const Mat4 getProjection() const;
 
 	virtual void update(float elapsedTime);
