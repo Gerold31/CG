@@ -25,6 +25,9 @@ public:
     void setAmbientLight(Color ambient);
     void setSkyBox(shared_ptr<Texture> skybox);
 
+	size_t getNumLights() const { return mLights.size(); }
+	shared_ptr<Light> getLight(size_t i) const { return mLights.at(i); }
+
 private:
     std::vector<shared_ptr<Drawable> > mObjects;
     std::vector<shared_ptr<Light> > mLights;
