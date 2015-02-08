@@ -13,6 +13,7 @@
 #include "logging.h"
 #include "onscreentext.h"
 #include "scene.h"
+#include "skybox.h"
 #include "testbox.h"
 
 
@@ -52,8 +53,10 @@ int App::run()
 	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
 	std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
 	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
+	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
 
 	scene.setCamera(cam);
+	scene.add(skyBox);
 	scene.add(box);
 	scene.add(fpsBox);
 
