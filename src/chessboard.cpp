@@ -7,6 +7,8 @@
 
 #include "camera.h"
 #include "filesystem.h"
+#include "scene.h"
+#include "light.h"
 
 #define CUBE_MIN_X (-1.f)
 #define CUBE_MAX_X ( 1.f)
@@ -30,47 +32,47 @@ ChessBoard::ChessBoard() :
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	GLfloat cube[CUBE_SIZE * 10] = {
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f,
 
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f,
 
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f,
 
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f, 0.f,
 
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MIN_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f,
 
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f,
-		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MIN_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		CUBE_MAX_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f,
+		CUBE_MIN_X, CUBE_MAX_Y, CUBE_MAX_Z, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f
 	};
 
 
@@ -118,6 +120,8 @@ ChessBoard::ChessBoard() :
 	mShaderProg->setVertexAttribPointer("color", 3, GL_FLOAT, 10*sizeof(GLfloat), 3*sizeof(GLfloat));
 	mShaderProg->setVertexAttribPointer("normal", 3, GL_FLOAT, 10*sizeof(GLfloat), 6*sizeof(GLfloat));
 	mShaderProg->setVertexAttribPointer("seed", 1, GL_FLOAT, 10*sizeof(GLfloat), 9*sizeof(GLfloat));
+
+	delete[] data;
 }
 
 ChessBoard::~ChessBoard()
@@ -138,6 +142,18 @@ void ChessBoard::draw(const Camera &camera) const
 
 	mShaderProg->setUniform("proj", camera.getProjection());
 	mShaderProg->setUniform("model", getTransfToGlobale());
+
+	size_t i = getScene()->getNumLights();
+	mShaderProg->setUniform("numLights", (int)i);
+	for(size_t i=0; i<getScene()->getNumLights(); i++)
+	{
+		shared_ptr<Light> l = getScene()->getLight(i);
+
+		mShaderProg->setUniform("lights", i, "position", l->getPosition());
+		mShaderProg->setUniform("lights", i, "color", l->getColor());
+		mShaderProg->setUniform("lights", i, "attenuation", l->getAttenuation());
+	}
+
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
 }

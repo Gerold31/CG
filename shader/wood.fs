@@ -1,9 +1,20 @@
 #version 150 core
 
 in vec3 fpos;
+in vec3 fsurfacePos;
 in vec3 fcolor;
 in vec3 fnormal;
 in float fseed;
+
+uniform mat4 model;
+uniform int numLights;
+
+#define MAX_LIGHTS 64
+uniform struct Light {
+   vec4 position;
+   vec3 color;
+   float attenuation;
+} lights[MAX_LIGHTS];
 
 out vec4 pcolor;
 
@@ -75,6 +86,18 @@ float noise(vec3 x, float octaves, float persistance)
 	return total;
 }
 
+vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceColor)
+{
+	vec3 surfaceToLight = normalize(light.position.xyz - surfacePos);
+	float distanceToLight = length(light.position.xyz - surfacePos);
+	float attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
+
+	float diffuseCoefficient = max(0.0, dot(surfaceNormal, surfaceToLight));
+	vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * light.color;
+
+	return attenuation * diffuse;
+}
+
 void main()
 {
 	vec3 base = fcolor;
@@ -99,6 +122,14 @@ void main()
 
 	vec3 color = vec3(interpolate(base_min.r, base_max.r, grain), interpolate(base_min.g, base_max.g, grain), interpolate(base_min.b, base_max.b, grain));
 
-	pcolor = vec4(color, 1.0);
+	vec3 spos = vec3(model * vec4(fpos, 1.));
+	vec3 snormal = normalize(transpose(inverse(mat3(model))) * fnormal);
+
+	pcolor = vec4(0, 0, 0, 0);
+	for(int i=0; i<numLights; i++)
+	{
+		pcolor += vec4(applyLight(lights[i], spos, snormal, color), 1);
+	}
+
 }
 
