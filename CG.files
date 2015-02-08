@@ -38,3 +38,5 @@ include/skybox.h
 src/skybox.cpp
 include/chessboard.h
 src/chessboard.cpp
+include/ocean.h
+src/ocean.cpp

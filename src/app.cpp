@@ -12,6 +12,7 @@
 #include "camera.h"
 #include "chessboard.h"
 #include "logging.h"
+#include "ocean.h"
 #include "onscreentext.h"
 #include "scene.h"
 #include "skybox.h"
@@ -54,12 +55,14 @@ int App::run()
 	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
 	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
 	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
+	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
 	std::shared_ptr<Light> light1 = std::make_shared<Light>();
 	std::shared_ptr<Light> light2 = std::make_shared<Light>();
 
 	scene.setCamera(cam);
 	scene.add(skyBox);
 	scene.add(chessBoard);
+	scene.add(ocean);
 	scene.add(fpsBox);
 	scene.add(light1);
 	scene.add(light2);
