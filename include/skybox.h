@@ -22,6 +22,8 @@ private:
 	shared_ptr<const ShaderProgram> mShaderProg;
 	GLuint vao;
 	GLuint vbo;
+
+	float mTime;
 };
 
 #endif // TESTBOX_H

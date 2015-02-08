@@ -103,6 +103,7 @@ void main()
 	vec3 v = fEyeDirection;
 	v.x = mod(fEyeDirection.x, 2*PI) / (2*PI);
 	v.y = mod(fEyeDirection.y, 2*PI) / (2*PI);
+	v.z /= 25;
 
 	v.x *= SCALE_X;
 	v.y *= SCALE_Y;

@@ -80,7 +80,7 @@ SkyBox::~SkyBox()
 
 void SkyBox::update(float elapsedTime)
 {
-	//mScene->
+	mTime += elapsedTime;
 }
 
 void SkyBox::draw(const Camera &camera) const
@@ -94,6 +94,7 @@ void SkyBox::draw(const Camera &camera) const
 	mShaderProg->setUniform("cameraDir", Vec3(camera.getTransfToGlobale()[2][0], camera.getTransfToGlobale()[2][1], camera.getTransfToGlobale()[2][2]));
 	mShaderProg->setUniform("fov", camera.getFov());
 	mShaderProg->setUniform("aspect", camera.getAspect());
+	mShaderProg->setUniform("time", mTime);
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
 
