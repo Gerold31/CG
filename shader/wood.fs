@@ -7,6 +7,7 @@ in vec3 fnormal;
 in float fseed;
 
 uniform mat4 model;
+uniform vec3 camPos;
 uniform int numLights;
 
 #define MAX_LIGHTS 64
@@ -17,6 +18,9 @@ uniform struct Light {
 } lights[MAX_LIGHTS];
 
 out vec4 pcolor;
+
+vec3 specularColor = 1.3 * fcolor;
+float shiningness = 2;
 
 float rand(vec3 x)
 {
@@ -86,7 +90,7 @@ float noise(vec3 x, float octaves, float persistance)
 	return total;
 }
 
-vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceColor)
+vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceColor, vec3 camToSurface)
 {
 	vec3 surfaceToLight = normalize(light.position.xyz - surfacePos);
 	float distanceToLight = length(light.position.xyz - surfacePos);
@@ -95,7 +99,12 @@ vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceCo
 	float diffuseCoefficient = max(0.0, dot(surfaceNormal, surfaceToLight));
 	vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * light.color;
 
-	return attenuation * diffuse;
+	float specularCoefficient = 0.0;
+	if(diffuseCoefficient > 0.0)
+		specularCoefficient = pow(max(0.0, dot(-camToSurface, reflect(-surfaceToLight, surfaceNormal))), shiningness);
+	vec3 specular = specularCoefficient * specularColor * light.color;
+
+	return attenuation * (diffuse + specular);
 }
 
 void main()
@@ -124,11 +133,12 @@ void main()
 
 	vec3 spos = vec3(model * vec4(fpos, 1.));
 	vec3 snormal = normalize(transpose(inverse(mat3(model))) * fnormal);
+	vec3 camToSurface = normalize(spos - camPos);
 
 	pcolor = vec4(0, 0, 0, 0);
 	for(int i=0; i<numLights; i++)
 	{
-		pcolor += vec4(applyLight(lights[i], spos, snormal, color), 1);
+		pcolor += vec4(applyLight(lights[i], spos, snormal, color, camToSurface), 1);
 	}
 
 }
