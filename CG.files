@@ -34,3 +34,5 @@ include/onscreentext.h
 src/onscreentext.cpp
 include/app.h
 src/app.cpp
+include/skybox.h
+src/skybox.cpp
