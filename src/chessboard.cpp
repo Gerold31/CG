@@ -143,7 +143,10 @@ void ChessBoard::draw(const Camera &camera) const
 	mShaderProg->setUniform("proj", camera.getProjection());
 	mShaderProg->setUniform("model", getTransfToGlobale());
 
+
+	//lighting
 	mShaderProg->setUniform("camPos", (Vec3)camera.getPosition());
+	mShaderProg->setUniform("ambientLight", getScene()->getAmbientLight());
 
 	size_t i = getScene()->getNumLights();
 	mShaderProg->setUniform("numLights", (int)i);

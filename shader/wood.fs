@@ -8,6 +8,7 @@ in float fseed;
 
 uniform mat4 model;
 uniform vec3 camPos;
+uniform vec3 ambientLight;
 uniform int numLights;
 
 #define MAX_LIGHTS 64
@@ -135,7 +136,7 @@ void main()
 	vec3 snormal = normalize(transpose(inverse(mat3(model))) * fnormal);
 	vec3 camToSurface = normalize(spos - camPos);
 
-	pcolor = vec4(0, 0, 0, 0);
+	pcolor = vec4(color.rgb * ambientLight, 1);
 	for(int i=0; i<numLights; i++)
 	{
 		pcolor += vec4(applyLight(lights[i], spos, snormal, color, camToSurface), 1);

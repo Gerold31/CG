@@ -11,13 +11,13 @@ public:
 
 	void update(float elapsedTime) {}
 
-	void setColor(Vec3 color) { mColor = color; }
+	void setColor(Color color) { mColor = color; }
 	void setAttenuation(float attenuation) { mAttenuation = attenuation; }
-	Vec3 getColor() { return mColor; }
+	Color getColor() { return mColor; }
 	float getAttenuation() { return mAttenuation; }
 
 private:
-	Vec3 mColor;
+	Color mColor;
 	float mAttenuation;
 };
 
