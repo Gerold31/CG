@@ -10,12 +10,11 @@
 #include <SDL2/SDL.h>
 
 #include "camera.h"
+#include "chessboard.h"
 #include "logging.h"
 #include "onscreentext.h"
 #include "scene.h"
 #include "skybox.h"
-#include "testbox.h"
-
 
 std::unique_ptr<App> App::mInstance;
 std::once_flag App::mInstanceFlag;
@@ -51,16 +50,16 @@ int App::run()
 	Scene scene;
 	float aspectRatio = (float) mResolution.x / mResolution.y;
 	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
-	std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
+	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
 	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
 	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
 
 	scene.setCamera(cam);
 	scene.add(skyBox);
-	scene.add(box);
+	scene.add(chessBoard);
 	scene.add(fpsBox);
 
-	cam->setPosition(Vec3(1.f, 3.f, 5.f));
+	cam->setPosition(Vec3(10.f, 5.f, 10.f));
 	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
 	fpsBox->setPosition(Vec3(-0.9f, -0.9f, 0.f));
 	// TODO load scene
