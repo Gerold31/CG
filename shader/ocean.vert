@@ -103,5 +103,5 @@ float translate(vec2 pos) {
 void main() {
 	vec2 pos = poscoord + campos.xz;
 	gl_Position = proj * vec4(pos.x, height + translate(pos), pos.y, 1.0);
-	fpos = vec3(gl_Position);
+	fpos = vec3(pos.x, height + translate(pos), pos.y);
 }
