@@ -23,7 +23,7 @@
 
 ChessBoard::ChessBoard() :
 	mFS("./"),
-	mShaderProg(mFS.getShaderProgram("shader/wood.sp"))
+	mShaderProg(mFS.getShaderProgram("shader/wood_chessboard.sp"))
 {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -158,7 +158,6 @@ void ChessBoard::draw(const Camera &camera) const
 		mShaderProg->setUniform("lights", i, "color", l->getColor());
 		mShaderProg->setUniform("lights", i, "attenuation", l->getAttenuation());
 	}
-
 
 	glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
 }
