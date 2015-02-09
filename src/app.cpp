@@ -211,6 +211,12 @@ void App::setupScene()
 
 
 	// setup light
+	std::shared_ptr<Light> sun = std::make_shared<Light>();
+	sun->setColor(Vec3(0.6f, 0.6f, 0.5f));
+	sun->setPosition(Vec4(1000.f, 1000.f, 1000.f, 1.f));
+	sun->setAttenuation(0.f);
+	mScene->add(sun);
+
 	std::shared_ptr<Light> light1 = std::make_shared<Light>();
 	light1->setColor(Vec3(1.f, 1.f, 1.f));
 	light1->setPosition(Vec4(0.f, 5.f, 0.f, 1.f));
