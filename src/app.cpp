@@ -23,7 +23,13 @@ std::once_flag App::mInstanceFlag;
 
 int App::run()
 {
+	mRunning = true;
 	// initialize
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
+		SEVERE("SDL initialization failed: %s", SDL_GetError());
+		return EXIT_FAILURE;
+	}
+
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
@@ -38,6 +44,8 @@ int App::run()
 				mResolution.x, mResolution.y, SDL_WINDOW_OPENGL);
 	SDL_GLContext context = SDL_GL_CreateContext(window);
 
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	glewExperimental = GL_TRUE;
 	GLenum ret = glewInit();
 	if (ret != GLEW_OK) {
@@ -49,44 +57,13 @@ int App::run()
 	mFS.reset(new FileSystem("."));
 
 	INFO("Create scene.");
-	Scene scene;
-	float aspectRatio = (float) mResolution.x / mResolution.y;
-	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
-	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
-	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
-	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
-	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
-	std::shared_ptr<Light> light1 = std::make_shared<Light>();
-	std::shared_ptr<Light> light2 = std::make_shared<Light>();
-
-	scene.setCamera(cam);
-	scene.add(skyBox);
-	scene.add(chessBoard);
-	scene.add(ocean);
-	scene.add(fpsBox);
-	scene.add(light1);
-	scene.add(light2);
-
-	cam->setPosition(Vec3(10.f, 5.f, 10.f));
-	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
-	fpsBox->setPosition(Vec3(-0.9f, -0.9f, 0.f));
-
-	light1->setColor(Vec3(1.f, 1.f, 1.f));
-	light1->setPosition(Vec4(0.f, 2.f, 0.f, 1.f));
-	light1->setAttenuation(0.1f);
-
-	light2->setColor(Vec3(1.f, .5f, .2f));
-	light2->setPosition(Vec4(8.f, 3.f, -8.f, 1.f));
-	light2->setAttenuation(0.01f);
-
-	// TODO load scene
+	setupScene();
 
 	// run main loop
-	bool running = true;
 	Uint32 fps_counter = 0;
 	Uint32 fps_lastSample = SDL_GetTicks();
 	Uint32 startTime = SDL_GetTicks();
-	while (running)
+	while (mRunning)
 	{
 		// update fps
 		Uint32 fps_diff = startTime - fps_lastSample;
@@ -94,7 +71,7 @@ int App::run()
 			Uint32 fps = fps_counter * 1000 / fps_diff;
 			static char buf[16];
 			std::sprintf(buf, "FPS: %d", fps);
-			fpsBox->setText(buf);
+			mFpsText->setText(buf);
 			// reset counter
 			fps_lastSample = startTime;
 			fps_counter = 0;
@@ -106,18 +83,26 @@ int App::run()
 		while (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_QUIT)
-				running = false;
+				mRunning = false;
+			else if (e.type == SDL_KEYDOWN)
+				handleKeyDownEvent(e.key);
+			else if (e.type == SDL_KEYUP)
+				handleKeyUpEvent(e.key);
+			else if (e.type == SDL_MOUSEMOTION)
+				handleMouseMotion(e.motion);
 		}
 
 		// update scene
-		scene.update(1.f/60.f);
+		float elapsedTime = 1.f/60.f;
+		update(elapsedTime);
+		mScene->update(elapsedTime);
 
 		// draw scene
 		glClearColor(0.0, 0.0, 0.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glEnable(GL_DEPTH_TEST);
-		scene.draw();
+		mScene->draw();
 
 		// wait
 		Uint32 remainingTime = 17 - (SDL_GetTicks() - startTime);
@@ -133,6 +118,134 @@ int App::run()
 
 	SDL_GL_DeleteContext(context);
 	SDL_DestroyWindow(window);
+	SDL_Quit();
 
 	return EXIT_SUCCESS;
+}
+
+void App::setupScene()
+{
+	mScene.reset(new Scene());
+	float aspectRatio = (float) mResolution.x / mResolution.y;
+
+	// setup cam
+	mCam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
+	mCam->setPosition(Vec3(10.f, 5.f, 10.f));
+	mCam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
+	mScene->setCamera(mCam);
+
+	// create objects
+	mFpsText = std::make_shared<OnScreenText>("FPS: -");
+	mFpsText->setPosition(Vec3(-0.9f, -0.9f, 0.f));
+
+	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
+	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
+	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
+
+	// add drawable objects to scene
+	mScene->add(skyBox);
+	mScene->add(chessBoard);
+	mScene->add(ocean);
+	mScene->add(mFpsText);
+
+	// setup light
+	std::shared_ptr<Light> light1 = std::make_shared<Light>();
+	light1->setColor(Vec3(1.f, 1.f, 1.f));
+	light1->setPosition(Vec4(0.f, 2.f, 0.f, 1.f));
+	light1->setAttenuation(0.1f);
+	mScene->add(light1);
+
+	std::shared_ptr<Light> light2 = std::make_shared<Light>();
+	light2->setColor(Vec3(1.f, .5f, .2f));
+	light2->setPosition(Vec4(8.f, 3.f, -8.f, 1.f));
+	light2->setAttenuation(0.01f);
+	mScene->add(light2);
+}
+
+void App::destroyScene()
+{
+	mCam = nullptr;
+	mFpsText = nullptr;
+	mScene = nullptr;
+}
+
+void App::update(float elapsedTime)
+{
+	mCam->move(Vec3(elapsedTime * mXMovement, 0.f, elapsedTime * mZMovement));
+}
+
+void App::handleKeyDownEvent(SDL_KeyboardEvent &e)
+{
+	SDL_Keycode keyPressed = e.keysym.sym;
+	if (e.repeat)
+		return;
+
+	switch (keyPressed)
+	{
+	case SDLK_w:
+		mZMovement -= 1;
+		break;
+	case SDLK_a:
+		mXMovement -= 1;
+		break;
+	case SDLK_s:
+		mZMovement += 1;
+		break;
+	case SDLK_d:
+		mXMovement += 1;
+		break;
+	case SDLK_SPACE:
+		mYMovement += 1;
+		break;
+	case SDLK_LCTRL:
+		mYMovement -= 1;
+		break;
+	}
+}
+
+void App::handleKeyUpEvent(SDL_KeyboardEvent &e)
+{
+	SDL_Keycode keyPressed = e.keysym.sym;
+	if (e.repeat)
+		return;
+
+	switch (keyPressed)
+	{
+	case SDLK_ESCAPE:
+		mRunning = false;
+		break;
+	case SDLK_w:
+		if (mZMovement < 0.f)
+			mZMovement = 0.f;
+		break;
+	case SDLK_a:
+		if (mXMovement < 0.f)
+			mXMovement = 0.f;
+		break;
+	case SDLK_s:
+		if (mZMovement > 0.f)
+			mZMovement = 0.f;
+		break;
+	case SDLK_d:
+		if (mXMovement > 0.f)
+			mXMovement = 0.f;
+		break;
+	case SDLK_SPACE:
+		if (mYMovement > 0.f)
+			mYMovement = 0.f;
+		break;
+	case SDLK_LCTRL:
+		if (mYMovement < 0.f)
+			mYMovement = 0.f;
+		break;
+	}
+}
+
+void App::handleMouseMotion(SDL_MouseMotionEvent &e)
+{
+	// show up or down
+	mCam->rotate(mRotationSpeed * e.y, Vec3(1.f, 0.f, 0.f));
+	// show left or right
+	Vec3 v = (Mat3) mCam->getTransfToLocale() * Vec3(0.f, 1.f, 0.f);
+	mCam->rotate(mRotationSpeed * e.x, v);
 }
