@@ -60,20 +60,22 @@ int App::run()
 	setupScene();
 
 	// run main loop
+	Uint32 currentTime = SDL_GetTicks();
 	Uint32 fps_counter = 0;
-	Uint32 fps_lastSample = SDL_GetTicks();
-	Uint32 startTime = SDL_GetTicks();
+	Uint32 fps_lastSample = currentTime;
+	Uint32 lastUpdateTime = currentTime;
 	while (mRunning)
 	{
 		// update fps
-		Uint32 fps_diff = startTime - fps_lastSample;
+		currentTime = SDL_GetTicks();
+		Uint32 fps_diff = currentTime - fps_lastSample;
 		if (fps_diff > 1000) {
 			Uint32 fps = fps_counter * 1000 / fps_diff;
 			static char buf[16];
 			std::sprintf(buf, "FPS: %d", fps);
 			mFpsText->setText(buf);
 			// reset counter
-			fps_lastSample = startTime;
+			fps_lastSample = currentTime;
 			fps_counter = 0;
 		}
 		++fps_counter;
@@ -93,7 +95,10 @@ int App::run()
 		}
 
 		// update scene
-		float elapsedTime = 1.f/60.f;
+		currentTime = SDL_GetTicks();
+		float elapsedTime = (currentTime - lastUpdateTime) * 0.001f;
+		lastUpdateTime = currentTime;
+
 		update(elapsedTime);
 		mScene->update(elapsedTime);
 
@@ -105,12 +110,10 @@ int App::run()
 		mScene->draw();
 
 		// wait
-		Uint32 remainingTime = 17 - (SDL_GetTicks() - startTime);
-		if (remainingTime > 0) {
-			SDL_Delay(remainingTime);
-		}
-
-		startTime = SDL_GetTicks();
+		//Uint32 remainingTime = 17 - (SDL_GetTicks() - startTime);
+		//if (remainingTime > 0) {
+		//	SDL_Delay(remainingTime);
+		//}
 
 		// show on display
 		SDL_GL_SwapWindow(window);
