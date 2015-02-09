@@ -244,8 +244,8 @@ void App::handleKeyUpEvent(SDL_KeyboardEvent &e)
 void App::handleMouseMotion(SDL_MouseMotionEvent &e)
 {
 	// show up or down
-	mCam->rotate(mRotationSpeed * e.y, Vec3(1.f, 0.f, 0.f));
+	mCam->rotate(mRotationSpeed * e.yrel, Vec3(-1.f, 0.f, 0.f));
 	// show left or right
-	Vec3 v = (Mat3) mCam->getTransfToLocale() * Vec3(0.f, 1.f, 0.f);
-	mCam->rotate(mRotationSpeed * e.x, v);
+	Vec3 v = (Mat3) mCam->getTransfToLocale() * Vec3(0.f, -1.f, 0.f);
+	mCam->rotate(mRotationSpeed * e.xrel, v);
 }
