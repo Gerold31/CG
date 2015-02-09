@@ -70,8 +70,10 @@ inline void Object::move(const Vec3 &movement)
 
 inline void Object::rotate(float angle, const Vec3 &v)
 {
-	mLocaleToGlobale = glm::rotate(mLocaleToGlobale, angle, v);
-	mGlobaleToLocale = glm::rotate(mGlobaleToLocale, -angle, v);
+	Mat4 rotationp = glm::rotate(Mat4(), angle, v);
+	Mat4 rotationn = glm::rotate(Mat4(), -angle, v);
+	mLocaleToGlobale = mLocaleToGlobale * rotationp;
+	mGlobaleToLocale = rotationn * mGlobaleToLocale;
 }
 
 inline void Object::lookAt(const Vec3 &center, const Vec3 &up)
