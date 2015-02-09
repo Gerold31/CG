@@ -63,8 +63,9 @@ inline void Object::setPosition(const Vec4 &pos)
 
 inline void Object::move(const Vec3 &movement)
 {
-	mLocaleToGlobale = glm::translate(mLocaleToGlobale, movement);
-	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -movement);
+	Vec3 gmove = (Mat3) mLocaleToGlobale * movement;
+	mLocaleToGlobale = glm::translate(mLocaleToGlobale, gmove);
+	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -gmove);
 }
 
 inline void Object::rotate(float angle, const Vec3 &v)
