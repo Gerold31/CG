@@ -8,6 +8,7 @@
 #include "mesh.h"
 #include "shaderprogram.h"
 #include "filesystem.h"
+#include "types.h"
 
 class Mesh;
 class Material;
@@ -15,7 +16,7 @@ class Material;
 class MeshInstance : public Drawable
 {
 public:
-	MeshInstance(std::shared_ptr<Mesh> mesh);
+	MeshInstance(std::shared_ptr<Mesh> mesh, bool black = true);
     ~MeshInstance();
 
     virtual void draw(const Camera &camera) const;
@@ -26,6 +27,9 @@ private:
 	FileSystem mFS;
 	shared_ptr<const ShaderProgram> mShaderProg;
 	GLuint vao;
+
+	int mSeed;
+	Color mColor;
 
 	enum
 	{
