@@ -4,6 +4,8 @@ in vec3 fEyeDirection;
 
 out vec4 pcolor;
 
+uniform float time;
+
 float PI = 3.14159265358979323846264;
 float SCALE_X = 10;
 float SCALE_Y = 20;
@@ -103,14 +105,14 @@ void main()
 	vec3 v = fEyeDirection;
 	v.x = mod(fEyeDirection.x, 2*PI) / (2*PI);
 	v.y = mod(fEyeDirection.y, 2*PI) / (2*PI);
-	v.z /= 25;
+	v.z = time/10;
 
 	v.x *= SCALE_X;
 	v.y *= SCALE_Y;
 
-	float grain = (noise(v, 8, .5) + 1)/2;
+	float grain = (noise(v, 4, .5) + 1)/4;
 
-	grain = pow(grain, 2);
+	//grain = pow(grain, 2);
 	//grain = 1-cos(grain * PI/2);
 
 	vec3 color = vec3(interpolate(base_min.r, base_max.r, grain), interpolate(base_min.g, base_max.g, grain), interpolate(base_min.b, base_max.b, grain));
