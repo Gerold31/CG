@@ -174,7 +174,9 @@ void App::destroyScene()
 
 void App::update(float elapsedTime)
 {
-	mCam->move(Vec3(elapsedTime * mXMovement, 0.f, elapsedTime * mZMovement));
+	float factor = mMovementSpeed * elapsedTime;
+	mCam->move(Vec3(factor * mXMovement, factor * mYMovement,
+					factor * mZMovement));
 }
 
 void App::handleKeyDownEvent(SDL_KeyboardEvent &e)
@@ -186,22 +188,22 @@ void App::handleKeyDownEvent(SDL_KeyboardEvent &e)
 	switch (keyPressed)
 	{
 	case SDLK_w:
-		mZMovement -= 1;
+		mZMovement -= 1.f;
 		break;
 	case SDLK_a:
-		mXMovement -= 1;
+		mXMovement -= 1.f;
 		break;
 	case SDLK_s:
-		mZMovement += 1;
+		mZMovement += 1.f;
 		break;
 	case SDLK_d:
-		mXMovement += 1;
+		mXMovement += 1.f;
 		break;
 	case SDLK_SPACE:
-		mYMovement += 1;
+		mYMovement += 1.f;
 		break;
 	case SDLK_LCTRL:
-		mYMovement -= 1;
+		mYMovement -= 1.f;
 		break;
 	}
 }

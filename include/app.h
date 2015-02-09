@@ -62,8 +62,8 @@ private:
 		mXMovement(0.f),
 		mYMovement(0.f),
 		mZMovement(0.f),
-		mMovementSpeed(2.f),
-		mRotationSpeed(0.0002f)
+		mMovementSpeed(4.f),
+		mRotationSpeed(0.001f)
 	{}
 	App(const App &); // = delete;
 	App &operator=(const App &); // = delete;
