@@ -13,6 +13,7 @@
 #include "chessboard.h"
 #include "light.h"
 #include "logging.h"
+#include "meshinstance.h"
 #include "ocean.h"
 #include "onscreentext.h"
 #include "scene.h"
@@ -156,16 +157,63 @@ void App::setupScene()
 	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
 	ocean->setPosition(Vec3(0.f, -0.3f, 0.f));
 
+	std::shared_ptr<Mesh> pawn = std::make_shared<Mesh>("chesspiece_pawn");
+	std::shared_ptr<Mesh> rook = std::make_shared<Mesh>("chesspiece_rook");
+	std::shared_ptr<Mesh> knight = std::make_shared<Mesh>("chesspiece_knight");
+	std::shared_ptr<Mesh> bishop = std::make_shared<Mesh>("chesspiece_bishop");
+	std::shared_ptr<Mesh> queen = std::make_shared<Mesh>("chesspiece_queen");
+	std::shared_ptr<Mesh> king = std::make_shared<Mesh>("chesspiece_king");
+
+
+	std::shared_ptr<MeshInstance> pawns[2][8];
+	std::shared_ptr<MeshInstance> rooks[2][2];
+	std::shared_ptr<MeshInstance> knights[2][2];
+	std::shared_ptr<MeshInstance> bishops[2][2];
+	std::shared_ptr<MeshInstance> queens[2][1];
+	std::shared_ptr<MeshInstance> kings[2][1];
+
+
 	// add drawable objects to scene
 	mScene->add(skyBox);
 	mScene->add(ocean);
 	mScene->add(chessBoard);
 	mScene->add(mFpsText);
 
+	chessBoard->setPosition(Vec3(1, 0.9, 1));
+
+	for(int j=0; j<2; j++)
+	{
+		for(int i=0; i<8; i++)
+		{
+			pawns[j][i] = std::make_shared<MeshInstance>(pawn, j);
+			pawns[j][i]->setPosition(Vec3(j ? -5 : 5, 1, -7 + 2*i));
+			mScene->add(pawns[j][i]);
+		}
+		for(int i=0; i<2; i++)
+		{
+			rooks[j][i] = std::make_shared<MeshInstance>(rook, j);
+			rooks[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -7 : 7));
+			mScene->add(rooks[j][i]);
+			knights[j][i] = std::make_shared<MeshInstance>(knight, j);
+			knights[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -5 : 5));
+			mScene->add(knights[j][i]);
+			bishops[j][i] = std::make_shared<MeshInstance>(bishop, j);
+			bishops[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -3 : 3));
+			mScene->add(bishops[j][i]);
+		}
+		queens[j][0] = std::make_shared<MeshInstance>(queen, j);
+		queens[j][0]->setPosition(Vec3(j ? -7 : 7, 1, -1));
+		mScene->add(queens[j][0]);
+		kings[j][0] = std::make_shared<MeshInstance>(king, j);
+		kings[j][0]->setPosition(Vec3(j ? -7 : 7, 1, 1));
+		mScene->add(kings[j][0]);
+	}
+
+
 	// setup light
 	std::shared_ptr<Light> light1 = std::make_shared<Light>();
 	light1->setColor(Vec3(1.f, 1.f, 1.f));
-	light1->setPosition(Vec4(0.f, 2.f, 0.f, 1.f));
+	light1->setPosition(Vec4(0.f, 5.f, 0.f, 1.f));
 	light1->setAttenuation(0.1f);
 	mScene->add(light1);
 
