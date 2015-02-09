@@ -66,14 +66,15 @@ Ocean::Ocean() :
 //		vertices.push_back({-accuracy - 2*accuracy,-accuracy - 2*accuracy}); //L
 //	}
 
-	for (float x = OCEAN_VIEW_DIST - 1; x > -OCEAN_VIEW_DIST; x -= 0.5) {
-		for (float z = -OCEAN_VIEW_DIST; z <= OCEAN_VIEW_DIST; z += 0.25) {
-			vertices.push_back({(GLfloat) x + 1, (GLfloat) z});
-			vertices.push_back({(GLfloat) x,     (GLfloat) z});
+	const float acc = OCEAN_HIGHEST_ACCURACY;
+	for (float x = OCEAN_VIEW_DIST - 1; x > -OCEAN_VIEW_DIST; x -= 2 * acc) {
+		for (float z = -OCEAN_VIEW_DIST; z <= OCEAN_VIEW_DIST; z += acc) {
+			vertices.push_back({(GLfloat) x + acc, (GLfloat) z});
+			vertices.push_back({(GLfloat) x,       (GLfloat) z});
 		}
-		for (float z = OCEAN_VIEW_DIST; z > -OCEAN_VIEW_DIST; z -= 0.25) {
-			vertices.push_back({(GLfloat) x - 1, (GLfloat) z});
-			vertices.push_back({(GLfloat) x,     (GLfloat) z - 1});
+		for (float z = OCEAN_VIEW_DIST; z > -OCEAN_VIEW_DIST; z -= acc) {
+			vertices.push_back({(GLfloat) x - acc, (GLfloat) z      });
+			vertices.push_back({(GLfloat) x,       (GLfloat) z - acc});
 		}
 	}
 
