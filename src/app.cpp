@@ -196,6 +196,7 @@ void App::setupScene()
 			mScene->add(rooks[j][i]);
 			knights[j][i] = std::make_shared<MeshInstance>(knight, j);
 			knights[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -5 : 5));
+			knights[j][i]->rotate(j ? M_PI/2 : -M_PI/2, Vec3(0, 1, 0));
 			mScene->add(knights[j][i]);
 			bishops[j][i] = std::make_shared<MeshInstance>(bishop, j);
 			bishops[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -3 : 3));
