@@ -177,7 +177,6 @@ void App::setupScene()
 	mScene->add(skyBox);
 	mScene->add(ocean);
 	mScene->add(chessBoard);
-	mScene->add(mFpsText);
 
 	chessBoard->setPosition(Vec3(1, 0.9, 1));
 
@@ -210,6 +209,7 @@ void App::setupScene()
 		mScene->add(kings[j][0]);
 	}
 
+	mScene->add(mFpsText);
 
 	// setup light
 	std::shared_ptr<Light> sun = std::make_shared<Light>();
