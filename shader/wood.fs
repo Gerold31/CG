@@ -3,8 +3,8 @@
 in vec3 fpos;
 in vec3 fnormal;
 
-uniform vec3 color;
-uniform float seed;
+uniform vec3 base_color;
+uniform int seed;
 
 uniform mat4 model;
 uniform vec3 camPos;
@@ -20,7 +20,7 @@ uniform struct Light {
 
 out vec4 pcolor;
 
-vec3 specularColor = 1.3 * color;
+vec3 specularColor = 1.3 * base_color;
 float shiningness = 2;
 
 float rand(vec3 x)
@@ -110,11 +110,11 @@ vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceCo
 
 void main()
 {
-	vec3 base = color;
+	vec3 base = base_color;
 	vec3 base_min = 0.9*base;
 	vec3 base_max = 1.1*base;
 
-	vec3 v = vec3(fpos.x/20, fpos.y/100, fpos.z/20);
+	vec3 v = vec3(fpos.x/3, fpos.y/20, fpos.z/3);
 
 	float grain = (noise(v, 3, .2) + 1) * 60;
 	grain = grain - int(grain);
@@ -141,6 +141,5 @@ void main()
 	{
 		pcolor += vec4(applyLight(lights[i], spos, snormal, color, camToSurface), 1);
 	}
-
 }
 

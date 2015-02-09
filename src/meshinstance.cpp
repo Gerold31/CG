@@ -9,13 +9,12 @@ MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh, bool black) :
 	mFS("./"),
 	mShaderProg(mFS.getShaderProgram("shader/wood.sp"))
 {
-	/*
 	mSeed = rand()%(1<<16);
 	if(black)
 		mColor = Color(150/256., 100/256., 50/256.);
 	else
 		mColor = Color(238/256., 197/256., 145/256.);
-	*/
+
 	mMesh = mesh;
 	int numVertices = mMesh->getVertices().mPositions.size();
 
@@ -71,7 +70,6 @@ MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh, bool black) :
 		0                   // offset of first element
 	);
 	*/
-
 	mShaderProg->setVertexAttribPointer("normal", 3, GL_FLOAT, 3*sizeof(GLfloat), 0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexArrayBuffers[INDEXVB]);
@@ -92,10 +90,8 @@ void MeshInstance::draw(const Camera &camera) const
 	mShaderProg->setUniform("proj", camera.getProjection());
 	mShaderProg->setUniform("model", getTransfToGlobale());
 
-	/*
 	mShaderProg->setUniform("seed", mSeed);
-	mShaderProg->setUniform("color", mColor);
-	*/
+	mShaderProg->setUniform("base_color", mColor);
 
 	//lighting
 	mShaderProg->setUniform("camPos", (Vec3)camera.getPosition());
