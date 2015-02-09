@@ -3,22 +3,22 @@
 in vec3 fpos;
 in vec3 fnormal;
 
-uniform vec3 campos;
-uniform mat4 model;
-uniform vec3 ambientLight;
-uniform int numLights;
+out vec4 pcolor;
 
-#define MAX_LIGHTS 64
+const int MAX_LIGHTS = 64;
+
+uniform vec3 camPos;
+
+uniform int numLights;
+uniform vec3 ambientLight;
 uniform struct Light {
    vec4 position;
    vec3 color;
    float attenuation;
 } lights[MAX_LIGHTS];
 
-vec3 specularColor = vec3(0.8, 0.8, 1.0);
-float shiningness = 10;
-
-out vec4 pcolor;
+uniform vec3 specularColor = vec3(0.8, 0.8, 1.0);
+uniform float shiningness = 10;
 
 vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceColor, vec3 camToSurface)
 {
@@ -37,17 +37,13 @@ vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceCo
 	return attenuation * (diffuse + specular);
 }
 
-
 void main() {
+	vec3 camToSurface = normalize(fpos - camPos);
 	vec3 color = vec3(0.5, 0.5, 1.0);
 
-	vec3 spos = vec3(model * vec4(fpos, 1.));
-	vec3 snormal = normalize(transpose(inverse(mat3(model))) * fnormal);
-	vec3 camToSurface = normalize(spos - campos);
-
-	pcolor = vec4(color.rgb * ambientLight, 1);
-	for(int i=0; i<numLights; i++)
+	pcolor = vec4(color * ambientLight, 1);
+	for(int i = 0; i < numLights; i++)
 	{
-		pcolor += vec4(applyLight(lights[i], spos, snormal, color, camToSurface), 1);
+		pcolor += vec4(applyLight(lights[i], fpos, fnormal, color, camToSurface), 1);
 	}
 }

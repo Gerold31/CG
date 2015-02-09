@@ -104,13 +104,11 @@ void Ocean::draw(const Camera &camera) const
 	mProg->setUniform("shift", mShift);
 	mProg->setUniform("height", getPosition().y);
 
-	mProg->setUniform("model", getTransfToGlobale());
-
 	//lighting
 	mProg->setUniform("ambientLight", getScene()->getAmbientLight());
 
 	size_t i = getScene()->getNumLights();
-	mProg->setUniform("numLights", (int)i);
+	mProg->setUniform("numLights", (GLint) i);
 	for(size_t i=0; i<getScene()->getNumLights(); i++)
 	{
 		shared_ptr<Light> l = getScene()->getLight(i);
