@@ -11,12 +11,13 @@
 
 #include "camera.h"
 #include "chessboard.h"
+#include "light.h"
 #include "logging.h"
 #include "ocean.h"
 #include "onscreentext.h"
 #include "scene.h"
 #include "skybox.h"
-#include "light.h"
+#include "types.h"
 
 std::unique_ptr<App> App::mInstance;
 std::once_flag App::mInstanceFlag;
@@ -58,6 +59,10 @@ int App::run()
 
 	INFO("Create scene.");
 	setupScene();
+
+	// set some render options
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	// run main loop
 	Uint32 currentTime = SDL_GetTicks();
@@ -131,6 +136,9 @@ void App::setupScene()
 	mScene.reset(new Scene());
 	float aspectRatio = (float) mResolution.x / mResolution.y;
 
+	// scene setting
+	mScene->setAmbientLight(Color(0.1f, 0.1f, 0.1f));
+
 	// setup cam
 	mCam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
 	mCam->setPosition(Vec3(10.f, 5.f, 10.f));
@@ -141,14 +149,17 @@ void App::setupScene()
 	mFpsText = std::make_shared<OnScreenText>("FPS: -");
 	mFpsText->setPosition(Vec3(-0.9f, -0.9f, 0.f));
 
-	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
 	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
+
+	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
+
 	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
+	ocean->setPosition(Vec3(0.f, -0.3f, 0.f));
 
 	// add drawable objects to scene
 	mScene->add(skyBox);
-	mScene->add(chessBoard);
 	mScene->add(ocean);
+	mScene->add(chessBoard);
 	mScene->add(mFpsText);
 
 	// setup light

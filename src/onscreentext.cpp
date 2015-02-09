@@ -43,7 +43,7 @@ void OnScreenText::draw(const Camera &camera) const
 		float sx = 2.f / APP->getResolution().x;
 		float sy = 2.f / APP->getResolution().y;
 		float x2 = x + glyph.left * sx;
-		float y2 = - y - glyph.top * sy;
+		float y2 = -y - glyph.top * sy;
 		float w = glyph.width * sx;
 		float h = glyph.height * sy;
 		float maxX = (float) glyph.width / glyph.texWidth;
@@ -51,8 +51,8 @@ void OnScreenText::draw(const Camera &camera) const
 
 		GLfloat buf[] = {
 			x2,     -y2,     0.f,  0.f,
-			x2 + w, -y2,     maxX, 0.f,
 			x2,     -y2 - h, 0.f,  maxY,
+			x2 + w, -y2,     maxX, 0.f,
 			x2 + w, -y2 - h, maxX, maxY
 		};
 
@@ -66,6 +66,7 @@ void OnScreenText::draw(const Camera &camera) const
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 }
 
 void OnScreenText::update(float elapsedTime)
