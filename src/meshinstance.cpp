@@ -2,11 +2,20 @@
 
 #include "logging.h"
 #include "camera.h"
+#include "scene.h"
+#include "light.h"
 
-MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh) :
+MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh, bool black) :
 	mFS("./"),
-	mShaderProg(mFS.getShaderProgram("shader/testbox.sp"))
+	mShaderProg(mFS.getShaderProgram("shader/wood.sp"))
 {
+	/*
+	mSeed = rand()%(1<<16);
+	if(black)
+		mColor = Color(150/256., 100/256., 50/256.);
+	else
+		mColor = Color(238/256., 197/256., 145/256.);
+	*/
 	mMesh = mesh;
 	int numVertices = mMesh->getVertices().mPositions.size();
 
@@ -31,6 +40,7 @@ MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh) :
 	mShaderProg->setVertexAttribPointer("pos", 4, GL_FLOAT, 4*sizeof(GLfloat), 0);
 
 
+	/*
 	//glEnableVertexAttribArray(1);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexArrayBuffers[TEXCOORDVB]);
 	glBufferData(GL_ARRAY_BUFFER, mMesh->getVertices().mTextureCoordinates.size() * sizeof(glm::vec2), mMesh->getVertices().mTextureCoordinates.data(), GL_STATIC_DRAW);
@@ -43,9 +53,10 @@ MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh) :
 		0,					// no extra data between each position
 		0					// offset of first element
 		);
-	*/
+	*
 
 	mShaderProg->setVertexAttribPointer("texcoord", 2, GL_FLOAT, 2*sizeof(GLfloat), 0);
+	*/
 
 	//glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexArrayBuffers[NORMALVB]);
@@ -65,6 +76,7 @@ MeshInstance::MeshInstance(std::shared_ptr<Mesh> mesh) :
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mVertexArrayBuffers[INDEXVB]);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mMesh->getVertices().mIndices.size() * sizeof(GLushort), mMesh->getVertices().mIndices.data(), GL_STATIC_DRAW);
+
 }
 
 MeshInstance::~MeshInstance()
@@ -79,6 +91,26 @@ void MeshInstance::draw(const Camera &camera) const
 
 	mShaderProg->setUniform("proj", camera.getProjection());
 	mShaderProg->setUniform("model", getTransfToGlobale());
+
+	/*
+	mShaderProg->setUniform("seed", mSeed);
+	mShaderProg->setUniform("color", mColor);
+	*/
+
+	//lighting
+	mShaderProg->setUniform("camPos", (Vec3)camera.getPosition());
+	mShaderProg->setUniform("ambientLight", getScene()->getAmbientLight());
+
+	size_t i = getScene()->getNumLights();
+	mShaderProg->setUniform("numLights", (int)i);
+	for(size_t i=0; i<getScene()->getNumLights(); i++)
+	{
+		shared_ptr<Light> l = getScene()->getLight(i);
+
+		mShaderProg->setUniform("lights", i, "position", l->getPosition());
+		mShaderProg->setUniform("lights", i, "color", l->getColor());
+		mShaderProg->setUniform("lights", i, "attenuation", l->getAttenuation());
+	}
 
 	int size = mMesh->getVertices().mIndices.size();
 	//glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
