@@ -14,11 +14,11 @@ const float PI = 3.14159265358979323846264;
 
 const float SCALE_X = 10;
 const float SCALE_Y = 20;
-const float SCALE_Z = 30;
+const float SCALE_Z = 64000;
 
 const int SEED = 1;
 
-const float OCTAVES = 8;
+const float OCTAVES = 3;
 const float PERSISTANCE = .5;
 
 float modf(float x, float y)
@@ -95,9 +95,9 @@ float noise(vec3 x)
 }
 
 float translate(vec2 pos) {
-	float grain = noise(vec3(pos, shift))/4;
-	fnormal = vec3(cos(pos.x + shift * PI)/4, 1, 0);
-	return sin(pos.x + shift * PI)/4 + grain;
+	float grain = noise(vec3(pos, shift)/10)*4;
+	fnormal = normalize(vec3(-cos(pos.x + shift * PI + grain * PI / 2)*grain/2, 1, 0));
+	return sin(pos.x + shift * PI + grain * PI / 2)*grain/2;
 }
 
 void main() {

@@ -91,7 +91,7 @@ Ocean::~Ocean()
 
 void Ocean::update(float elapsedTime)
 {
-	static const float interval = 30;
+	static const float interval = 64000;
 	mShift += elapsedTime;
 	mShift -= interval * std::floor(mShift / interval);
 }
