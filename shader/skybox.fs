@@ -1,31 +1,25 @@
 #version 150 core
 
-in vec3 fpos;
-in vec3 fsurfacePos;
-in vec3 fcolor;
-in vec3 fnormal;
-in float fseed;
-
-uniform mat4 model;
-uniform vec3 camPos;
-uniform vec3 ambientLight;
-uniform int numLights;
-
-#define MAX_LIGHTS 64
-uniform struct Light {
-   vec4 position;
-   vec3 color;
-   float attenuation;
-} lights[MAX_LIGHTS];
+in vec3 fEyeDirection;
 
 out vec4 pcolor;
 
-vec3 specularColor = 1.3 * fcolor;
-float shiningness = 2;
+float PI = 3.14159265358979323846264;
+float SCALE_X = 10;
+float SCALE_Y = 20;
+
+float modf(float x, float y)
+{
+	return x - y * floor(x/y);
+}
 
 float rand(vec3 x)
 {
-	int seed = int(fseed + .5);
+	// @todo get this from outside
+	int seed = 1;
+
+	x.x = modf(x.x, SCALE_X);
+	x.y = modf(x.y, SCALE_Y);
 
 	int n = seed + int(x.x * 57. + x.y * 83. + x.z * 127.);
 	n = (n<<13) ^ n;
@@ -43,6 +37,12 @@ float interpolate(float a, float b, float x)
 	float f = (1 - cos(ft)) * 0.5;
 
 	return  a*(1-f) + b*f;
+}
+
+float interpolate_lin(float a, float b, float x)
+{
+	float f = x - floor(x);
+	return (1-f)*a + f*b;
 }
 
 float interpolateNoise(vec3 x)
@@ -69,6 +69,7 @@ float interpolateNoise(vec3 x)
 
 float noise(vec3 x, float octaves, float persistance)
 {
+	// @todo get this from outside
 	//float octaves = 4;
 	//float persistance = .15;
 
@@ -91,56 +92,29 @@ float noise(vec3 x, float octaves, float persistance)
 	return total;
 }
 
-vec3 applyLight(Light light, vec3 surfacePos, vec3 surfaceNormal, vec3 surfaceColor, vec3 camToSurface)
-{
-	vec3 surfaceToLight = normalize(light.position.xyz - surfacePos);
-	float distanceToLight = length(light.position.xyz - surfacePos);
-	float attenuation = 1.0 / (1.0 + light.attenuation * pow(distanceToLight, 2));
-
-	float diffuseCoefficient = max(0.0, dot(surfaceNormal, surfaceToLight));
-	vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * light.color;
-
-	float specularCoefficient = 0.0;
-	if(diffuseCoefficient > 0.0)
-		specularCoefficient = pow(max(0.0, dot(-camToSurface, reflect(-surfaceToLight, surfaceNormal))), shiningness);
-	vec3 specular = specularCoefficient * specularColor * light.color;
-
-	return attenuation * (diffuse + specular);
-}
-
 void main()
 {
-	vec3 base = fcolor;
-	vec3 base_min = 0.9*base;
-	vec3 base_max = 1.1*base;
+	// @todo get this from outside
+	vec3 base = vec3(40/256., 30/256., 150/256.);
 
-	vec3 v = vec3(fpos.x/20, fpos.y/100, fpos.z/20);
+	vec3 base_min = vec3(40/256., 30/256., 150/256.);
+	vec3 base_max = vec3(256/256., 256/256., 256/256.);
 
-	float grain = (noise(v, 5, .2) + 1) * 60;
-	grain = grain - int(grain);
+	vec3 v = fEyeDirection;
+	v.x = mod(fEyeDirection.x, 2*PI) / (2*PI);
+	v.y = mod(fEyeDirection.y, 2*PI) / (2*PI);
+	v.z /= 25;
 
-	float t = .8;
+	v.x *= SCALE_X;
+	v.y *= SCALE_Y;
 
-	if(grain < t)
-		grain = grain/t;
-	else
-		grain = (1-grain)/(1-t);
+	float grain = (noise(v, 8, .5) + 1)/2;
 
-//	grain = pow(cos(grain), 3);
-	grain = 1-pow(grain, 2);
-//	grain = 1-pow(2, -5 * pow(grain, 2));
+	grain = pow(grain, 2);
+	//grain = 1-cos(grain * PI/2);
 
 	vec3 color = vec3(interpolate(base_min.r, base_max.r, grain), interpolate(base_min.g, base_max.g, grain), interpolate(base_min.b, base_max.b, grain));
 
-	vec3 spos = vec3(model * vec4(fpos, 1.));
-	vec3 snormal = normalize(transpose(inverse(mat3(model))) * fnormal);
-	vec3 camToSurface = normalize(spos - camPos);
-
-	pcolor = vec4(color.rgb * ambientLight, 1);
-	for(int i=0; i<numLights; i++)
-	{
-		pcolor += vec4(applyLight(lights[i], spos, snormal, color, camToSurface), 1);
-	}
-
+	pcolor = vec4(color, 1.0);
 }
 

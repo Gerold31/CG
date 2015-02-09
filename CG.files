@@ -34,3 +34,9 @@ include/onscreentext.h
 src/onscreentext.cpp
 include/app.h
 src/app.cpp
+include/skybox.h
+src/skybox.cpp
+include/chessboard.h
+src/chessboard.cpp
+include/ocean.h
+src/ocean.cpp

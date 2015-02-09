@@ -83,10 +83,15 @@ std::shared_ptr<Shader> FileSystem::loadShader(const std::string &path) const
 	std::string source(buffer.str());
 
 	GLenum type;
-	if (path.substr(path.length() - 3) == ".vs") {
+	if (path.substr(path.length() - 3) == ".vs"
+			|| path.substr(path.length() - 5) == ".vert") {
 		type = GL_VERTEX_SHADER;
-	} else if (path.substr(path.length() - 3) == ".fs") {
+	} else if (path.substr(path.length() - 3) == ".fs"
+			|| path.substr(path.length() - 5) == ".frag") {
 		type = GL_FRAGMENT_SHADER;
+	} else if (path.substr(path.length() - 3) == ".gs"
+			|| path.substr(path.length() - 5) == ".geom") {
+		type = GL_GEOMETRY_SHADER;
 	} else {
 		WARNING("Unknown type of shader: %s", path.c_str());
 		// TODO add other types and throw when nothing metches...

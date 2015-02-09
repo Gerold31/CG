@@ -10,11 +10,13 @@
 #include <SDL2/SDL.h>
 
 #include "camera.h"
+#include "chessboard.h"
 #include "logging.h"
+#include "ocean.h"
 #include "onscreentext.h"
 #include "scene.h"
-#include "testbox.h"
-
+#include "skybox.h"
+#include "light.h"
 
 std::unique_ptr<App> App::mInstance;
 std::once_flag App::mInstanceFlag;
@@ -50,16 +52,33 @@ int App::run()
 	Scene scene;
 	float aspectRatio = (float) mResolution.x / mResolution.y;
 	std::shared_ptr<Camera> cam = std::make_shared<Camera>(M_PI_4, 0.1f, 1000.f, aspectRatio);
-	std::shared_ptr<TestBox> box = std::make_shared<TestBox>();
+	std::shared_ptr<ChessBoard> chessBoard = std::make_shared<ChessBoard>();
 	std::shared_ptr<OnScreenText> fpsBox = std::make_shared<OnScreenText>("FPS: -");
+	std::shared_ptr<SkyBox> skyBox = std::make_shared<SkyBox>();
+	std::shared_ptr<Ocean> ocean = std::make_shared<Ocean>();
+	std::shared_ptr<Light> light1 = std::make_shared<Light>();
+	std::shared_ptr<Light> light2 = std::make_shared<Light>();
 
 	scene.setCamera(cam);
-	scene.add(box);
+	scene.add(skyBox);
+	scene.add(chessBoard);
+	scene.add(ocean);
 	scene.add(fpsBox);
+	scene.add(light1);
+	scene.add(light2);
 
-	cam->setPosition(Vec3(1.f, 3.f, 5.f));
+	cam->setPosition(Vec3(10.f, 5.f, 10.f));
 	cam->lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 1.f, 0.f));
 	fpsBox->setPosition(Vec3(-0.9f, -0.9f, 0.f));
+
+	light1->setColor(Vec3(1.f, 1.f, 1.f));
+	light1->setPosition(Vec4(0.f, 2.f, 0.f, 1.f));
+	light1->setAttenuation(0.1f);
+
+	light2->setColor(Vec3(1.f, .5f, .2f));
+	light2->setPosition(Vec4(8.f, 3.f, -8.f, 1.f));
+	light2->setAttenuation(0.01f);
+
 	// TODO load scene
 
 	// run main loop

@@ -19,13 +19,14 @@ public:
     virtual void update(float elapsedTime) = 0;
 
 	void setPosition(const Vec3 &pos);
+	void setPosition(const Vec4 &pos);
 	void move(const Vec3 &movement);
 	void rotate(float angle, const Vec3 &v);
 	void lookAt(const Vec3 &center, const Vec3 &up);
 
 	const Mat4 &getTransfToLocale() const;
 	const Mat4 &getTransfToGlobale() const;
-	Vec3 getPosition() const;
+	Vec4 getPosition() const;
 
 protected:
 	Scene *getScene();
@@ -48,10 +49,23 @@ inline void Object::setPosition(const Vec3 &pos)
 	mGlobaleToLocale[3][2] = -pos[2];
 }
 
+inline void Object::setPosition(const Vec4 &pos)
+{
+	mLocaleToGlobale[3][0] = pos[0];
+	mLocaleToGlobale[3][1] = pos[1];
+	mLocaleToGlobale[3][2] = pos[2];
+	mLocaleToGlobale[3][3] = pos[3];
+	mGlobaleToLocale[3][0] = -pos[0];
+	mGlobaleToLocale[3][1] = -pos[1];
+	mGlobaleToLocale[3][2] = -pos[2];
+	mGlobaleToLocale[3][3] = -pos[3];
+}
+
 inline void Object::move(const Vec3 &movement)
 {
-	mLocaleToGlobale = glm::translate(mLocaleToGlobale, movement);
-	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -movement);
+	Vec3 gmove = (Mat3) mLocaleToGlobale * movement;
+	mLocaleToGlobale = glm::translate(mLocaleToGlobale, gmove);
+	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -gmove);
 }
 
 inline void Object::rotate(float angle, const Vec3 &v)
@@ -62,7 +76,7 @@ inline void Object::rotate(float angle, const Vec3 &v)
 
 inline void Object::lookAt(const Vec3 &center, const Vec3 &up)
 {
-	Vec3 pos = getPosition();
+	Vec3 pos = (Vec3)getPosition();
 	mGlobaleToLocale = glm::lookAt(pos, center, up);
 	mLocaleToGlobale = glm::inverse(mGlobaleToLocale);
 }
@@ -77,9 +91,9 @@ inline const Mat4 &Object::getTransfToGlobale() const
 	return mLocaleToGlobale;
 }
 
-inline Vec3 Object::getPosition() const
+inline Vec4 Object::getPosition() const
 {
-	return (Vec3) mLocaleToGlobale[3];
+	return mLocaleToGlobale[3];
 }
 
 inline Scene *Object::getScene()

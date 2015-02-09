@@ -33,8 +33,16 @@ public:
 	void setUniform(const std::string &name, GLint value) const;
 	void setUniform(const std::string &name, GLfloat value) const;
 	void setUniform(const std::string &name, const Vec3 &value) const;
+	void setUniform(const std::string &name, const Vec4 &value) const;
 	void setUniform(const std::string &name, const Mat3 &value) const;
 	void setUniform(const std::string &name, const Mat4 &value) const;
+
+	void setUniform(const std::string &array, size_t index, const std::string &name, GLint value) const;
+	void setUniform(const std::string &array, size_t index, const std::string &name, GLfloat value) const;
+	void setUniform(const std::string &array, size_t index, const std::string &name, const Vec3 &value) const;
+	void setUniform(const std::string &array, size_t index, const std::string &name, const Vec4 &value) const;
+	void setUniform(const std::string &array, size_t index, const std::string &name, const Mat3 &value) const;
+	void setUniform(const std::string &array, size_t index, const std::string &name, const Mat4 &value) const;
 
 private:
 	ShaderProgram(const ShaderProgram &); // = delete;
@@ -85,6 +93,11 @@ inline void ShaderProgram::setUniform(const std::string &name, const Vec3 &value
 	glUniform3fv(getUniformLocation(name), 1, glm::value_ptr(value));
 }
 
+inline void ShaderProgram::setUniform(const std::string &name, const Vec4 &value) const
+{
+	glUniform4fv(getUniformLocation(name), 1, glm::value_ptr(value));
+}
+
 inline void ShaderProgram::setUniform(const std::string &name, const Mat3 &value) const
 {
 	glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
@@ -93,6 +106,44 @@ inline void ShaderProgram::setUniform(const std::string &name, const Mat3 &value
 inline void ShaderProgram::setUniform(const std::string &name, const Mat4 &value) const
 {
 	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+}
+
+
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, GLint value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
+}
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, GLfloat value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
+}
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, const Vec3 &value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
+}
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, const Vec4 &value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
+}
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, const Mat3 &value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
+}
+inline void ShaderProgram::setUniform(const std::string &array, size_t index, const std::string &name, const Mat4 &value) const
+{
+	static char buf[64];
+	std::sprintf(buf, "%s[%d].%s", array.c_str(), index, name.c_str());
+	setUniform(buf, value);
 }
 
 #endif // SHADERPROGRAM_H

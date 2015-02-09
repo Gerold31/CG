@@ -6,8 +6,10 @@
 #include "camera.h"
 #include "drawable.h"
 #include "light.h"
+#include "logging.h"
 #include "types.h"
 
+#define MAX_LIGHTS 64
 
 Scene::Scene()
 {
@@ -61,6 +63,11 @@ void Scene::add(shared_ptr<Drawable> obj)
 void Scene::add(shared_ptr<Light> light)
 {
 	assert(light->mScene == nullptr);
+	if(mLights.size() >= MAX_LIGHTS)
+	{
+		WARNING("Cannot add light, light limit reached!");
+		return;
+	}
 	light->mScene = this;
 	mLights.push_back(light);
 }
