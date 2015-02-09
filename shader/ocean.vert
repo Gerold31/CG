@@ -2,6 +2,7 @@
 
 in vec2 poscoord;
 
+out vec3 fpos;
 out vec3 fnormal;
 
 uniform mat4 proj;
@@ -94,12 +95,13 @@ float noise(vec3 x)
 }
 
 float translate(vec2 pos) {
-	fnormal = vec3(0,0,0); // TODO
 	float grain = noise(vec3(pos, shift))/4;
+	fnormal = vec3(cos(pos.x + shift * PI)/4, 1, 0);
 	return sin(pos.x + shift * PI)/4 + grain;
 }
 
 void main() {
 	vec2 pos = poscoord + campos.xz;
 	gl_Position = proj * vec4(pos.x, height + translate(pos), pos.y, 1.0);
+	fpos = vec3(gl_Position);
 }

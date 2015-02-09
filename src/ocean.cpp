@@ -4,7 +4,8 @@
 #include <vector>
 
 #include "camera.h"
-
+#include "scene.h"
+#include "light.h"
 
 #define OCEAN_VIEW_DIST 100
 #define OCEAN_HIGHEST_ACCURACY 0.125
@@ -97,10 +98,27 @@ void Ocean::update(float elapsedTime)
 void Ocean::draw(const Camera &camera) const
 {
 	mProg->use();
-	mProg->setUniform("campos", camera.getPosition());
+	mProg->setUniform("campos", (Vec3)camera.getPosition());
 	mProg->setUniform("proj", camera.getProjection());
 	mProg->setUniform("shift", mShift);
 	mProg->setUniform("height", getPosition().y);
+
+	mProg->setUniform("model", getTransfToGlobale());
+
+	//lighting
+	mProg->setUniform("ambientLight", getScene()->getAmbientLight());
+
+	size_t i = getScene()->getNumLights();
+	mProg->setUniform("numLights", (int)i);
+	for(size_t i=0; i<getScene()->getNumLights(); i++)
+	{
+		shared_ptr<Light> l = getScene()->getLight(i);
+
+		mProg->setUniform("lights", i, "position", l->getPosition());
+		mProg->setUniform("lights", i, "color", l->getColor());
+		mProg->setUniform("lights", i, "attenuation", l->getAttenuation());
+	}
+
 	glBindVertexArray(vao);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
