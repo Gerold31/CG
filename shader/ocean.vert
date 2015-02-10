@@ -96,7 +96,7 @@ float noise(vec3 x)
 
 float translate(vec2 pos) {
 	float grain = noise(vec3(pos, shift)/10)*4;
-	fnormal = normalize(vec3(-cos(pos.x + shift * PI + grain * PI / 2)*grain/2, 1, 0));
+	fnormal = normalize(vec3(-cos(pos.x + shift * PI + grain * PI / 2) + grain/4, 1, grain/10));
 	return sin(pos.x + shift * PI + grain * PI / 2)*grain/2;
 }
 
