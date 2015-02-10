@@ -41,30 +41,22 @@ private:
 
 inline void Object::setPosition(const Vec3 &pos)
 {
-	mLocaleToGlobale[3][0] = pos[0];
-	mLocaleToGlobale[3][1] = pos[1];
-	mLocaleToGlobale[3][2] = pos[2];
-	mGlobaleToLocale[3][0] = -pos[0];
-	mGlobaleToLocale[3][1] = -pos[1];
-	mGlobaleToLocale[3][2] = -pos[2];
+	Vec3 lpos = Mat3(mGlobaleToLocale) * pos;
+	mLocaleToGlobale[3] = Vec4(pos, 1.f);
+	mGlobaleToLocale[3] = Vec4(-lpos, 1.f);
 }
 
 inline void Object::setPosition(const Vec4 &pos)
 {
-	mLocaleToGlobale[3][0] = pos[0];
-	mLocaleToGlobale[3][1] = pos[1];
-	mLocaleToGlobale[3][2] = pos[2];
-	mLocaleToGlobale[3][3] = pos[3];
-	mGlobaleToLocale[3][0] = -pos[0];
-	mGlobaleToLocale[3][1] = -pos[1];
-	mGlobaleToLocale[3][2] = -pos[2];
-	mGlobaleToLocale[3][3] = -pos[3];
+	Vec4 lpos(Mat3(mGlobaleToLocale) * Vec3(pos), pos.w);
+	mLocaleToGlobale[3] = pos;
+	mGlobaleToLocale[3] = -lpos;
 }
 
 inline void Object::move(const Vec3 &movement)
 {
 	Vec3 gmove = (Mat3) mLocaleToGlobale * movement;
-	mLocaleToGlobale = glm::translate(mLocaleToGlobale, gmove);
+	mLocaleToGlobale = glm::translate(mLocaleToGlobale, movement);
 	mGlobaleToLocale = glm::translate(mGlobaleToLocale, -gmove);
 }
 
