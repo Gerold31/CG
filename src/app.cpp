@@ -177,7 +177,6 @@ void App::setupScene()
 	mScene->add(skyBox);
 	mScene->add(ocean);
 	mScene->add(chessBoard);
-	mScene->add(mFpsText);
 
 	chessBoard->setPosition(Vec3(1, 0.9, 1));
 
@@ -196,6 +195,7 @@ void App::setupScene()
 			mScene->add(rooks[j][i]);
 			knights[j][i] = std::make_shared<MeshInstance>(knight, j);
 			knights[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -5 : 5));
+			knights[j][i]->rotate(j ? M_PI/2 : -M_PI/2, Vec3(0, 1, 0));
 			mScene->add(knights[j][i]);
 			bishops[j][i] = std::make_shared<MeshInstance>(bishop, j);
 			bishops[j][i]->setPosition(Vec3(j ? -7 : 7, 1, i ? -3 : 3));
@@ -209,8 +209,15 @@ void App::setupScene()
 		mScene->add(kings[j][0]);
 	}
 
+	mScene->add(mFpsText);
 
 	// setup light
+	std::shared_ptr<Light> sun = std::make_shared<Light>();
+	sun->setColor(Vec3(0.6f, 0.6f, 0.5f));
+	sun->setPosition(Vec4(1000.f, 1000.f, 1000.f, 1.f));
+	sun->setAttenuation(0.f);
+	mScene->add(sun);
+
 	std::shared_ptr<Light> light1 = std::make_shared<Light>();
 	light1->setColor(Vec3(1.f, 1.f, 1.f));
 	light1->setPosition(Vec4(0.f, 5.f, 0.f, 1.f));
