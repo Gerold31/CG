@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project( CG )
 
 #SET(CMAKE_BUILD_TYPE "None")
@@ -7,12 +7,13 @@ project( CG )
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(GLM REQUIRED)
+find_package(glm REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(SDL2 REQUIRED sdl2)
 find_package(Freetype REQUIRED)
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
 
 add_definitions(-DLOG_COLOR)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
